@@ -9,10 +9,10 @@
 	
 	<!-- MJax Core scripts -->
 	
-	<script language="javascript" src="<?php echo(__ASSETS_JS__); ?>/_core/jquery/jquery.1.9.1.js"></script>
-	<script language="javascript" src="<?php echo(__ASSETS_JS__); ?>/_core/MJax.js"></script>
-	<!--script language="javascript" src="<?php echo(__MJAX_CORE_ASSET_URL__); ?>/js/jquery/jquery.1.9.1.js"></script>
-	<script language="javascript" src="<?php echo(__MJAX_CORE_ASSET_URL__); ?>/js/MJax.js"></script-->
+	<!--script language="javascript" src="<?php echo(__ASSETS_JS__); ?>/_core/jquery/jquery.1.9.1.js"></script>
+	<script language="javascript" src="<?php echo(__ASSETS_JS__); ?>/_core/MJax.js"></script-->
+	<script language="javascript" src="<?php echo(__MJAX_CORE_ASSET_URL__); ?>/js/jquery/jquery.1.9.1.js"></script>
+	<script language="javascript" src="<?php echo(__MJAX_CORE_ASSET_URL__); ?>/js/MJax.js"></script>
 	
 	<script language="javascript" src="<?php echo(__ASSETS_JS__); ?>/bootstrap.js"></script>
 	<script language="javascript">
