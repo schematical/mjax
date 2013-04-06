@@ -150,9 +150,12 @@ class MJaxFormBase{
 		}catch(Exception $e){
 			error_log($e->getMessage());
 		}
-		foreach(self::$arrExtensions as $intIndex => $objExtension){
-			$objExtension->InitControl($objClass);
-		}
+
+        if($objClass->strCallType == MJaxCallType::None){
+            foreach(self::$arrExtensions as $intIndex => $objExtension){
+                $objExtension->InitControl($objClass);
+            }
+        }
         if(key_exists(MJaxFormPostData::ACTION, $_POST)){
         	self::$objForm = $objClass;
             self::$strCurrAction = $_POST[MJaxFormPostData::ACTION];
@@ -477,6 +480,7 @@ class MJaxFormBase{
     }
     public function AddHeaderAsset($objNewAsset){    	
         foreach(self::$arrAsset as $objAsset){
+
             if($objAsset->Src == $objNewAsset->Src){
                 //Were already including this so return
                 return;
