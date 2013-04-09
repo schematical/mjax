@@ -29,9 +29,13 @@ class MJaxTable extends MJaxControl{
 		}
 		$arrColumnData = array();
 		foreach($this->arrDataEntites as $objEntity){
-        	foreach($this->arrColumnTitles as $strPropName => $strTitle){
-        		$arrColumnData[$strPropName] = $objEntity->$strPropName;
+        	foreach($this->arrColumnTitles as $strTitle => $mixData){
+
+                if(is_string($mixData)){
+        		    $arrColumnData[$strTitle] = $objEntity->$mixData;
+                }
 			}
+            //_dp($arrColumnData);
 			$objRow = $this->AddRow($arrColumnData);
 			$objRow->ActionParameter = $objEntity->GetId();
 			//_dp($objRow);
@@ -39,12 +43,18 @@ class MJaxTable extends MJaxControl{
 		
 		
 	}
-	public function AddColumn($strTitle, $strPropName = null){
-		if(!is_null($strPropName)){
-			$this->arrColumnTitles[$strPropName] = $strTitle;	
-		}else{
-			$this->arrColumnTitles[] = $strTitle;
-		}	
+	public function AddColumn($strTitle, $mixColumn = null){
+        if(is_string($mixColumn)){
+            if(!is_null($mixColumn)){
+                $this->arrColumnTitles[$strTitle] = $mixColumn;
+            }else{
+                $this->arrColumnTitles[$strTitle] = $strTitle;
+            }
+        }elseif(is_callable($mixColumn)){
+            $this->arrColumnTitles[$strTitle] = $mixColumn;
+        }else{
+            throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
+        }
 	}
     public function Render($blnPrint = true, $blnRenderAsAjax = false){
         if($blnRenderAsAjax){
@@ -89,7 +99,7 @@ class MJaxTable extends MJaxControl{
 	public function RenderDefault(){
 		$strRendered = '<thead>';
 		$strRendered .= '<tr>';
-		foreach($this->arrColumnTitles as $mixProp => $strTitle){
+		foreach($this->arrColumnTitles as $strTitle => $mixProp){
 			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $strTitle);
 		}
 		

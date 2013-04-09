@@ -22,16 +22,20 @@ class MJaxTableRow extends MJaxControl{
         }
         $strRendered = parent::Render();
         $strHeader = sprintf("<%s id='%s' name='%s' %s>\n", $strElementOverride, $this->strControlId, $this->strControlId, $this->GetAttrString());
-		foreach($this->objParentControl->GetColumnTitles() as $strPropName => $mixData){
-			if(array_key_exists($strPropName, $this->arrData)){
-				$mixData = $this->arrData[$strPropName];
+		foreach($this->objParentControl->GetColumnTitles() as $strTitle => $mixData){
+			if(array_key_exists($strTitle, $this->arrData)){
+
+				$mixData = $this->arrData[$strTitle];
 				if(
 					(is_object($mixData)) &&
 					($mixData instanceof MJaxControl)
 				){
 					$strHtml = $mixData->Render(false);
 					$strRendered .= '<td>' . $strHtml . '</td>';
-				}else{
+				}/*elseif(is_callable($mixData)){
+                    $strHtml = $mixData($this);
+                    $strRendered .= '<td>' . $strHtml . '</td>';
+                }*/else{
 					$strRendered .= '<td>' . $mixData . '</td>';
 				}
 			}else{

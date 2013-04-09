@@ -490,7 +490,7 @@ class MJaxFormBase{
     }
     public function RenderHeaderAssets($blnPrint = true){        
         $strRender = '';
-        foreach(self::$arrAsset as $objAsset){        	
+        foreach(self::$arrAsset as $objAsset){
             if(!$objAsset->AlreadyRendered){
             	$strRender .= $objAsset->__toString();
                 $objAsset->AlreadyRendered = true;
