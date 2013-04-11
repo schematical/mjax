@@ -191,6 +191,7 @@ class MJaxFormBase{
         }else{
             $objClass->Render();
         }
+        ob_end_flush();
         $objClass->__call('Form_Exit',array());
 		
     }
