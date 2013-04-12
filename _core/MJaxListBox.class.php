@@ -12,11 +12,18 @@ class MJaxListBox extends MJaxControl{
             $strTag = 'control';
         }
         $strRendered .= sprintf("<%s id='%s' name='%s' %s>\n", $strTag, $this->strControlId, $this->strControlId, $this->GetAttrString());
+
+        $strChildren  = '';
          foreach($this->arrListItems as $objListItem){
             //render list items
-            $strRendered .= MLCApplication::XmlEscape($objListItem->__toString());
+             $strChildren .= $objListItem->__toString();
          }
+        if($blnRenderAsAjax){
+            $strChildren = MLCApplication::XmlEscape($strChildren);
+        }
+        $strRendered .= $strChildren;
         $strRendered .= sprintf("</%s>\n", $strTag);
+
         if($blnPrint){
             echo($strRendered);
         }else{
