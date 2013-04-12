@@ -4,14 +4,19 @@
  */
 class MJaxListBox extends MJaxControl{
     protected $arrListItems = array();
-    public function Render($blnPrint = true){
+    public function Render($blnPrint = true, $blnRenderAsAjax = false){
         $strRendered = parent::Render();
-        $strRendered .= sprintf("<select id='%s' name='%s' %s>\n", $this->strControlId, $this->strControlId, $this->GetAttrString());
+        if(!$blnRenderAsAjax){
+            $strTag = 'select';
+        }else{
+            $strTag = 'control';
+        }
+        $strRendered .= sprintf("<%s id='%s' name='%s' %s>\n", $strTag, $this->strControlId, $this->strControlId, $this->GetAttrString());
          foreach($this->arrListItems as $objListItem){
             //render list items
-            $strRendered .= $objListItem->__toString();
+            $strRendered .= MLCApplication::XmlEscape($objListItem->__toString());
          }
-        $strRendered .= "</select>\n";
+        $strRendered .= sprintf("</%s>\n", $strTag);
         if($blnPrint){
             echo($strRendered);
         }else{
