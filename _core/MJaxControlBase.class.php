@@ -265,6 +265,11 @@ class MJaxControlBase{
         return $strAttr;
     }
     public function Remove(){
+
+
+        if(!is_null($this->objParentControl)){
+            unset($this->objParentControl->arrChildControls[$this->strControlId]);
+        }
     	$this->objForm->RemoveControl($this->strControlId);
     }
     /////////////////////////
