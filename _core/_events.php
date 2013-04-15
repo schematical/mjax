@@ -54,12 +54,7 @@ class MJaxEventBase{
             case "KeyCode": return $this->strKeyCode;
             case "Control": return $this->objControl;
             default:
-                try {
-                    return parent::__get($strName);
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                throw new MLCMissingPropertyException($this, $strName);
         }
     }
 
@@ -69,33 +64,14 @@ class MJaxEventBase{
     public function __set($strName, $mixValue) {
         switch ($strName) {
             case "Once":
-                try {
-                    return ($this->blnOnce = QType::Cast($mixValue, QType::Boolean));
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return ($this->blnOnce = QType::Cast($mixValue, QType::Boolean));
             case "Rendered":
-                try {
-                    return ($this->blnRendered = QType::Cast($mixValue, QType::Boolean));
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return ($this->blnRendered = QType::Cast($mixValue, QType::Boolean));
             case "KeyCode":
-                try {
-                    return ($this->strKeyCode = $mixValue);
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return ($this->strKeyCode = $mixValue);
             default:
-                try {
-                    return parent::__set($strName, $mixValue);
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return parent::__set($strName, $mixValue);
+
         }
     }
     public function Render(){

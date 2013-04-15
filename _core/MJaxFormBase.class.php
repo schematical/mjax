@@ -425,7 +425,7 @@ class MJaxFormBase{
         } 
 		 
         foreach(self::$arrMiscJSCalls as $strJS){
-            $strRendered .= $strJS;
+            $strRendered .= $strJS . "\n";
         }        
         if($blnAjaxFormating){
             $strRendered = self::XmlEscape(trim($strRendered));
