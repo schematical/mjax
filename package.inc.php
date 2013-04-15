@@ -30,6 +30,7 @@ MLCApplicationBase::$arrClassFiles['MJaxTable'] = __MJAX_CORE__ . '/MJaxTable.cl
 MLCApplicationBase::$arrClassFiles['MJaxTableRow'] = __MJAX_CORE__ . '/MJaxTableRow.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxRadioBox'] = __MJAX_CORE__ . '/MJaxRadioBox.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxUploadBox'] = __MJAX_CORE__ . '/MJaxUploadBox.class.php';
+MLCApplicationBase::$arrClassFiles['MJaxRoute'] = __MJAX_CORE__ . '/MJaxRoute.class.php';
 
 
 //header_asset

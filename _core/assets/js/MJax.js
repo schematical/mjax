@@ -240,9 +240,12 @@ var MJax = {
                  var strText = jControl.text();
                  eval(strText);
              }
+        $(document).trigger('mjax-page-load');
+
         if(typeof  MJax.funMainPageLoad != 'undefined'){
         	MJax.funMainPageLoad();
         }
+
     },
     LoadMainPageLoadFail:function(jXhr, strTextStaus, strErrorThrown){
     	

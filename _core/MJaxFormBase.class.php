@@ -12,6 +12,7 @@ class MJaxFormBase{
     public static $FormStateHandler = 'MJaxFormStateHandler';    
 	public static $strTemplateDirOverride = null;
 	public static $strTemplateRemove = null;
+    public static $arrRouts = array();
 
     //------Instance------
     protected $strTitle = null;
@@ -29,7 +30,7 @@ class MJaxFormBase{
     protected $blnForceRenderFormState = false;
 	protected $strAssetMode = null;
 	protected $strAsyncRenderMode = MJaxResponseFormat::XML;
-
+    protected $arrRoutes = null;
     protected $blnSkipMainWindowRender = false;
     /////////////////////////
     // Public Properties: GET
@@ -143,7 +144,11 @@ class MJaxFormBase{
             $objClass->strCallType = MJaxCallType::None;
 			 //Create a proxy for the main content panel
             $objClass->pxyMainWindow = new MJaxControlProxy($objClass, 'mainWindow_inner');
-            $objClass->Form_Create();           
+            $objClass->Form_Create();
+            $objRoute = $objClass->FindRoute();
+            if(!is_null($objRoute)){
+                return $objRoute->Trigger();
+            }
         }
 		try{
 			MJaxForm::DefineAssetDir($objClass->strAssetMode);
@@ -675,6 +680,26 @@ class MJaxFormBase{
 			)
 		);		
 	}
+    public function AddRoute($mixMethods, $strExtension, $strFunction, $objListener = null){
+        if(is_null($objListener)){
+            $objListener = $this;
+        }
+        $this->arrRoutes[] = new MJaxRoute($mixMethods, $strExtension, $strFunction, $objListener);
+    }
+    public function FindRoute(){
+        foreach($this->arrRoutes as $intIndex => $objRoute){
+            if($objRoute->Matches(
+                $_SERVER['REQUEST_METHOD'],
+                $this->GetRouteExtension()
+            )){
+                return $objRoute;
+            }
+        }
+        return null;
+    }
+    public function GetRouteExtension(){
+        return pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
+    }
 	public function __call($strName, $arrArguments){
 		
 		foreach(self::$arrExtensions as $intIndex => $objExtension){
