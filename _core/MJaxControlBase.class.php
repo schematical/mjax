@@ -290,6 +290,7 @@ class MJaxControlBase{
             case "Modified": return $this->blnModified;
             case "ChildControls": return $this->arrChildControls;
             case "Name": return $this->strName;
+            case "Events": return $this->arrEvents;
             default:
                throw new Exception("No property with name '" . $strName . "'");
         }

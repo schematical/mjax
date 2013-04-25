@@ -51,6 +51,7 @@ var MJax = {
 		        }else{
 		           	jEle.val(strHtml);
 	           	}
+
             }else{
             	MLog("Missing DOM element '#" + strControlId + "'");
             }
@@ -106,6 +107,16 @@ var MJax = {
                     return objResponse;
                 }
             }
+        }
+    },
+    funAjaxLoadStart:function(strData){
+        if(typeof(MJax.Alert) != 'undefined'){
+            MJax.Alert(
+                "<h1><i class='icon-refresh icon-spin icon-large'></i> &nbsp;&nbsp;"+ strData + "</h1>"
+            );
+            $(document).one('mjax-ajax-response', function(){
+                MJax.BS.HideAlert();
+            });
         }
     },
     GetDocAncorLocation:function(){
@@ -191,6 +202,7 @@ var MJax = {
         
     },
     LoadMainPageLoadCallback:function(strData, strTextStatus, xmlResponse){
+        $(document).trigger('mjax-ajax-response');
         var jData = $(strData);
         
              var jCollControls = jData.find('controls').children();
@@ -221,6 +233,9 @@ var MJax = {
 			        }else{
 			           	jEle.val(strValue);
 		           	}
+                    if(typeof jControl.attr('style') != 'undefined'){
+                        jEle.attr('style',jControl.attr('style'));
+                    }
 	            }else{
 	            	if(strSelector == '#MJaxForm__FormState'){
 	            		var jEle = $('<input id="MJaxForm__FormState" type="hidden"></input>');
@@ -248,7 +263,7 @@ var MJax = {
 
     },
     LoadMainPageLoadFail:function(jXhr, strTextStaus, strErrorThrown){
-    	
+    	console.log(strErrorThrown);
     	if(typeof(MJax.Alert) != 'undefined'){
     		MJax.Alert(
     			
@@ -270,6 +285,10 @@ var MJax = {
         if((typeof strId == 'undefined')|| (strId.length == 0)){
         	//var jTarget = $(strSelector);
         	strId = strSelector.substr(1, strSelector.length - 1);
+        }
+        var strOnLoad = jTarget.attr('data-mlc-on-ajax-text');
+        if(typeof strOnLoad != 'undefined'){
+            MJax.funAjaxLoadStart(strOnLoad);
         }
         objData.action = 'control_event';
         objData.control_id = strId;

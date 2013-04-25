@@ -3,12 +3,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-class MJaxBaseAction{
+abstract class MJaxBaseAction{
     protected $objEvent = null;
     
     public function SetEvent($objEvent){
         $this->objEvent = $objEvent;
     }
+    abstract public function Render();
 
 }
 

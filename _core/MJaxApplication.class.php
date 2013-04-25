@@ -79,6 +79,93 @@ abstract class MJaxApplication{
         }
         return false;
     }
+    const SPECIAL_JSON_ENCODE_START = '<<%%';
+    const SPECIAL_JSON_ENCODE_END = '%%>>';
+    public static function SpecialJSONEncode($arrData, $blnRenderAsString = true){
+        foreach($arrData as $strKey => $mixData){
+            if(is_object($mixData)){
+                if(
+                    ($mixData instanceof MJaxBaseAction)// ||
+                    //($mixData instanceof MJaxEventBase)
+                ){
+
+                    $arrData[$strKey] = self::SPECIAL_JSON_ENCODE_START . $mixData->Render() . self::SPECIAL_JSON_ENCODE_END;
+                }elseif(method_exists($mixData, '__toJson')){
+                    $arrData[$strKey] = self::SPECIAL_JSON_ENCODE_START . $mixData->__toJson() . self::SPECIAL_JSON_ENCODE_END;
+                }else{
+                    throw new Exception("Failed to SpecialJSONEncode: " . get_class($mixData));
+                }
+            }elseif(is_array($arrData[$strKey])){
+                $arrData[$strKey] = self::SpecialJSONEncode($arrData[$strKey], false);
+
+            }
+        }
+        if(!$blnRenderAsString){
+            return $arrData;
+        }
+
+        $strData = json_encode($arrData);
+        //echo ("Incoming: " . $strData . "\n\n");
+        $intStartPos = strpos($strData, self::SPECIAL_JSON_ENCODE_START);
+
+        $strAfter = $strData;//Will get overwritten if it hits the loop
+        $intEndPos = 0;
+        $strReturn = substr($strData, 0, $intStartPos - 1);
+        while($intStartPos !== false){
+
+
+            $intEndPos = strpos($strData, self::SPECIAL_JSON_ENCODE_END, $intStartPos);
+
+            $strPayload = substr(
+                $strData,
+                $intStartPos + strlen(self::SPECIAL_JSON_ENCODE_START),
+                $intEndPos - ($intStartPos + (strlen(self::SPECIAL_JSON_ENCODE_END)))
+            );
+
+            //echo("Payload Presstrip:" . $strPayload . "\n\n");
+            error_log("After:" . $strAfter);
+            $strPayload =  stripslashes($strPayload);
+            //echo("Payload Post strip:" . $strPayload . "\n\n");
+            $strReturn .= $strPayload;
+
+
+            $intStartPos = strpos($strData,self::SPECIAL_JSON_ENCODE_START, $intEndPos);
+            if($intStartPos !== false){
+                $strAfter = substr(
+                    $strData,
+                    $intEndPos + strlen(self::SPECIAL_JSON_ENCODE_END) + 1,
+                    $intStartPos - ($intEndPos + strlen(self::SPECIAL_JSON_ENCODE_START) + 2)
+
+                );
+                $strReturn .= $strAfter;
+            }
+
+        }
+        //echo("Strlen: " . $intEndPos . '/' . strlen($strData) . "\n\n");
+        $strAfter = substr(
+            $strData,
+            $intEndPos + strlen(self::SPECIAL_JSON_ENCODE_END) + 1
+        );
+        //echo("After:" . $strAfter . "\n\n");
+        $strReturn .= $strAfter;
+        //echo("Finished:" . $strReturn . "\n\n");
+        //echo("\n\n\n--------------------------------------------\n\n");
+        /*if(defined('cccc')){
+            //die($strReturn);
+        }
+        if(defined('bbbb')){
+            //die($strData);
+            define("cccc", '1');
+        }else{
+            if(defined('aaaa')){
+                define("bbbb", '1');
+            }
+            if(!defined('aaaa')){
+                define("aaaa", '1');
+            }
+        }*/
+        return $strReturn;
+    }
 
 }
 /*

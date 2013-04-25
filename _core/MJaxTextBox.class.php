@@ -78,7 +78,7 @@ class MJaxTextBox extends MJaxControl{
 							(strpos($strText, ' onclick=') !== false) ||
 							(strpos($strText, '<object') !== false) ||
 							(strpos($strText, 'background:url') !== false))
-							throw new Exception($this->strControlId);
+							throw new Exception('Cross site script detected ' . $this->strControlId);
 				}
 			}
 		}

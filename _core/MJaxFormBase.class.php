@@ -30,7 +30,7 @@ class MJaxFormBase{
     protected $blnForceRenderFormState = false;
 	protected $strAssetMode = null;
 	protected $strAsyncRenderMode = MJaxResponseFormat::XML;
-    protected $arrRoutes = null;
+    protected $arrRoutes = array();
     protected $blnSkipMainWindowRender = false;
     /////////////////////////
     // Public Properties: GET
@@ -197,7 +197,8 @@ class MJaxFormBase{
             $objClass->Render();
         }
         ob_end_flush();
-        $objClass->__call('Form_Exit',array());
+
+        $objClass->Form_Exit();
 		
     }
     public static function LocateTemplate($strFileLoc, $strAssetMode){
