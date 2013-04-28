@@ -45,5 +45,5 @@
 <?php } ?>
 <?php $this->RenderTemplate('_meta'); ?>
 </head>
-<body class='impress-not-supported' data-spy="scroll" data-target=".bs-docs-sidebar">
+<body data-spy="scroll" data-target=".navbar">
   <div id='mainWindow'>

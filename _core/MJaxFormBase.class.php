@@ -656,10 +656,10 @@ class MJaxFormBase{
 	public static function DefineAssetDir($strAssetMode){
 		
 		if(!defined('__ASSETS__')){
-			define('__ASSETS__', __ASSETS_URL__ . '/' . $strAssetMode);
+			define('__ASSETS__', __ASSETS_URL__);
 			define('__ASSETS_JS__', __ASSETS__ . '/js');
 			define('__ASSETS_CSS__', __ASSETS__ . '/css');
-			define('__ASSETS_IMG__', __ASSETS__ . '/img');
+			define('__ASSETS_IMG__', __ASSETS__ . '/imgs');
 		}else{
 			throw new Exception("ASSET DIRECTORYS are alredy defined");
 		}
