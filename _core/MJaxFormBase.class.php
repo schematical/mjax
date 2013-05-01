@@ -460,7 +460,7 @@ class MJaxFormBase{
         }
     }
     public function TriggerControlEvent($strControlId, $strEvent){
-        if(!key_exists($strControlId, $this->arrControls)){
+        if(!array_key_exists($strControlId, $this->arrControls)){
             throw new Exception("Control '" . $strControlId . "' does not exist");
         }
         $this->arrControls[$strControlId]->__call('TriggerEvent',array($strEvent));
@@ -468,7 +468,7 @@ class MJaxFormBase{
     }
     public function RegisterControl($objControl){
         $strControlId = $objControl->ControlId;
-        if(key_exists($strControlId, $this->arrControls)){
+        if(array_key_exists($strControlId, $this->arrControls)){
                 throw new Exception("A control with the Id '" . $strControlId . "' already exists");
         }
         $this->arrControls[$strControlId] = $objControl;        

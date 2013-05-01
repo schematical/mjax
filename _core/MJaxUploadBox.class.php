@@ -10,7 +10,9 @@ class MJaxUploadBox extends MJaxControl{
 	protected $arrFileData = null;
     public function __construct($objParentControl,$strControlId = null) {
         parent::__construct($objParentControl,$strControlId); 
-		$this->objForm->AddHeaderAsset(new MJaxJSHeaderAsset(__ASSETS_JS__ .'/_core/MJax.UploadBox.js'));
+		$this->objForm->AddHeaderAsset(new MJaxJSHeaderAsset(
+            __MJAX_CORE_ASSET_URL__ .'/js/MJax.UploadBox.js'
+        ));
 		$this->objForm->AddJSCall(
 			sprintf(
 				'$(function(){ MJax.UploadBox.Init("#%s"); });',

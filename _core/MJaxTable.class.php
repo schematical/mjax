@@ -27,15 +27,16 @@ class MJaxTable extends MJaxControl{
 		}else{
 			$this->arrDataEntites = $arrDataEntites;
 		}
+
 		$arrColumnData = array();
 		foreach($this->arrDataEntites as $objEntity){
+
         	foreach($this->arrColumnTitles as $strTitle => $mixData){
 
                 if(is_string($mixData)){
         		    $arrColumnData[$strTitle] = $objEntity->$mixData;
                 }
 			}
-            //_dp($arrColumnData);
 			$objRow = $this->AddRow($arrColumnData);
 			$objRow->ActionParameter = $objEntity->GetId();
 			//_dp($objRow);

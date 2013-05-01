@@ -26,6 +26,7 @@ class MJaxTableRow extends MJaxControl{
 			if(array_key_exists($strTitle, $this->arrData)){
 
 				$mixData = $this->arrData[$strTitle];
+
 				if(
 					(is_object($mixData)) &&
 					($mixData instanceof MJaxControl)
