@@ -132,7 +132,7 @@ class MJaxFormBase{
                // QApplication::$RequestMode = QRequestMode::Ajax;
 
         }elseif(
-        	(key_exists(MJaxFormPostData::ACTION, $_POST)) && 
+        	(array_key_exists(MJaxFormPostData::ACTION, $_POST)) &&
         	($_POST[MJaxFormPostData::ACTION] == MJaxFormAction::CHANGE_PAGE)
 		){
              $objClass->strCallType = MJaxCallType::Ajax;
@@ -161,7 +161,7 @@ class MJaxFormBase{
                 $objExtension->InitControl($objClass);
             }
         }
-        if(key_exists(MJaxFormPostData::ACTION, $_POST)){
+        if(array_key_exists(MJaxFormPostData::ACTION, $_POST)){
         	self::$objForm = $objClass;
             self::$strCurrAction = $_POST[MJaxFormPostData::ACTION];
             switch(self::$strCurrAction){
@@ -187,8 +187,9 @@ class MJaxFormBase{
         }else{
             $objClass->strTemplate = $strAlternateHtmlFile;
         }
+
         foreach(self::$arrExtensions as $intIndex => $objExtension){
-				$objExtension->RunPreRender($objClass);
+            $objExtension->RunPreRender($objClass);
 		}
         $objClass->Form_PreRender();
 		if($objClass->strCallType == MJaxCallType::Ajax){

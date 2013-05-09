@@ -28,6 +28,7 @@ class MJaxPanel extends MJaxControl{
         //Render Text
         $strRendered .= $this->strText;
         //Check/Do autorender children
+
         if($this->blnAutoRenderChildren){
             foreach($this->arrChildControls as $objChildControl){
                 $strRendered .= $objChildControl->Render(false);

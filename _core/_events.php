@@ -32,7 +32,7 @@ class MJaxEventBase{
         $this->objAction->SetEvent($this);
     }
     public function Exicute(){
-        if(key_exists(MJaxEventPostData::KEYCODE, $_POST)){
+        if(array_key_exists(MJaxEventPostData::KEYCODE, $_POST)){
             $this->strKeyCode = $_POST[MJaxEventPostData::KEYCODE];
         }
         $this->objControl->Form->ActiveEvent = $this;
