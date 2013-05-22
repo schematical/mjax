@@ -9,7 +9,7 @@
 	
 	<!-- MJax Core scripts -->
 
-	<script language="javascript" src="<?php echo MLCApplication::GetAssetUrl('/js/jquery/jquery.1.9.1.js', 'MJax'); ?>"></script>
+	<script language="javascript" src="<?php echo __MJAX_CORE_ASSET_URL__ . '/js/jquery/jquery.1.9.1.js'; ?>"></script>
 	<script language="javascript" src="<?php echo MLCApplication::GetAssetUrl('/js/MJax.js', 'MJax'); ?>"></script>
 	<script language="javascript">
 	    $('document').ready(function(){ 
