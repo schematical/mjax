@@ -45,5 +45,5 @@
 <?php } ?>
 <?php $this->RenderTemplate('_meta'); ?>
 </head>
-<body data-spy="scroll" data-target="#divStepManager" data-offset='25'>
+<body class='homepage' data-spy="scroll" data-target="#divStepManager" data-offset='25'>
   <div id='mainWindow'>

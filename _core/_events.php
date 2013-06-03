@@ -26,7 +26,7 @@ class MJaxEventBase{
         }elseif(is_string($mixTarget)){
             $this->strSelector = $mixTarget;
         }else{
-            throw new QCallerException("Event target must be either a MJaxControl, MJaxCssClass, or string");
+            throw new Exception("Event target must be either a MJaxControl, MJaxCssClass, or string");
         }
         $this->objAction = $objAction;
         $this->objAction->SetEvent($this);
