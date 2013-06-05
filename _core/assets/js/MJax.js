@@ -180,7 +180,10 @@ var MJax = {
         	jControl = $('#' + this.arrControls[i]);
         	if(jControl.is('div')){
         		//DO nothing
-        	}else if(jControl.attr('type') == 'checkbox'){
+        	}else if(
+                (jControl.attr('type') == 'checkbox') ||
+                (jControl.attr('type') == 'radio')
+            ){
         		this.objCurrPostData[this.arrControls[i]] = jControl.is(':checked');
         	}else{
            		this.objCurrPostData[this.arrControls[i]] = jControl.val();
