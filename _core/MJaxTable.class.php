@@ -47,7 +47,7 @@ class MJaxTable extends MJaxControl{
 	public function AddColumn($strTitle, $mixColumn = null){
         if(is_string($mixColumn)){
             if(!is_null($mixColumn)){
-                $this->arrColumnTitles[$strTitle] = $mixColumn;
+                $this->arrColumnTitles[$mixColumn] = $strTitle;
             }else{
                 $this->arrColumnTitles[$strTitle] = $strTitle;
             }
@@ -101,7 +101,7 @@ class MJaxTable extends MJaxControl{
 		$strRendered = '<thead>';
 		$strRendered .= '<tr>';
 		foreach($this->arrColumnTitles as $strTitle => $mixProp){
-			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $strTitle);
+			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $mixProp);
 		}
 		
 		$strRendered .= '</tr>';
