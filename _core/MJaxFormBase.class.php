@@ -32,6 +32,8 @@ class MJaxFormBase{
 	protected $strAsyncRenderMode = MJaxResponseFormat::XML;
     protected $arrRoutes = array();
     protected $blnSkipMainWindowRender = false;
+    protected $strHeader = null;
+    protected $strFooter = null;
     /////////////////////////
     // Public Properties: GET
     /////////////////////////
@@ -49,6 +51,8 @@ class MJaxFormBase{
             case "ForceRenderFormState": return $this->ForceRenderFormState;
 			case "AsssetMode": return $this->strAssetMode;
 			case "AsyncRenderMode": return $this->strAsyncRenderMode;
+            case "Header": return $this->strHeader;
+            case "Footer": return $this->strFooter;
 			
             default:
                 //return parent::__get($strName);
@@ -78,6 +82,10 @@ class MJaxFormBase{
                 return $this->strAssetMode = $mixValue;
 			case "AsyncRenderMode":
 				return $this->strAsyncRenderMode = $mixValue;
+            case "Header":
+                return $this->strHeader = $mixValue;
+            case "Footer":
+                return $this->strFooter = $mixValue;
             default:
                 throw new Exception("Class '" . __CLASS__ . "' has no property '" . $strName . "'");
                 
@@ -235,14 +243,24 @@ class MJaxFormBase{
 
     protected function Render(){
     	if($this->blnUseHeader){
-	        $strHeader = $this->EvaluateTemplate(__MJAX_CORE_VIEW__ . '/' . $this->strAssetMode . '/_header.inc.php');
+            if(!is_null($this->strHeader)){
+                $strTemplate = $this->strHeader;
+            }else{
+                $strTemplate = __MJAX_CORE_VIEW__ . '/' . $this->strAssetMode . '/_header.inc.php';
+            }
+	        $strHeader = $this->EvaluateTemplate($strTemplate);
 	        echo($strHeader);
     	}
     	
         require($this->strTemplate);
         
         if($this->blnUseHeader){
-	        $strFooter = $this->EvaluateTemplate(__MJAX_CORE_VIEW__ . '/' . $this->strAssetMode . '/_footer.inc.php');
+            if(!is_null($this->strFooter)){
+                $strTemplate = $this->strFooter;
+            }else{
+                $strTemplate = __MJAX_CORE_VIEW__ . '/' . $this->strAssetMode . '/_footer.inc.php';
+            }
+	        $strFooter = $this->EvaluateTemplate($strTemplate);
 	        $strFormState = sprintf('<input type="hidden" name="%s" id="%s" value="%s" />', MJaxFormPostData::MJaxForm__FormState, MJaxFormPostData::MJaxForm__FormState, MJaxForm::Serialize($this));
 	        echo($strFormState);
 	        echo($strFooter);
