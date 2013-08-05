@@ -276,7 +276,13 @@ var MJax = {
     },
     TriggerControlEvent:function(objEvent, strSelector, strEvent, objData){
         var jTarget = $(strSelector);//$(objEvent.target);
-        if(typeof objEvent.preventDefault != 'undefined'){
+        if(typeof objEvent == 'undefined'){
+            var objEvent = {};
+        }
+
+        if(
+            (typeof objEvent.preventDefault != 'undefined')
+        ){
         	objEvent.preventDefault();
         }
         var jFormState = $("#MJaxForm__FormState");

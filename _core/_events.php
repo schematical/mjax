@@ -169,4 +169,23 @@ class MJaxUploadEvent extends MJaxEventBase{
 class MJaxFancyboxCloseEvent extends MJaxEventBase{
     protected $strEventName = 'fancybox-close';
 }
+class MJaxTimeoutEvent extends MJaxEventBase{
+    protected $intMiliseconds = 10000;
+    protected $strEventName = 'timeout';
+    public function __construct($intMiliseconds){
+        $this->intMiliseconds = $intMiliseconds;
+    }
+    public function Render(){
+        $strRendered = sprintf(
+            "window.setTimeout(
+                %s,
+                %s
+            );",
+            $this->objAction->Render(),
+            $this->intMiliseconds
+        );
+        $this->blnRendered = true;
+        return $strRendered;
+    }
+}
 ?>

@@ -680,7 +680,7 @@ class MJaxFormBase{
 			define('__ASSETS_CSS__', __ASSETS__ . '/css');
 			define('__ASSETS_IMG__', __ASSETS__ . '/imgs');
 		}else{
-			throw new Exception("ASSET DIRECTORYS are alredy defined");
+			//throw new Exception("ASSET DIRECTORYS are alredy defined");
 		}
 	}
 	public static function XmlEscape($strString) {
@@ -707,6 +707,7 @@ class MJaxFormBase{
         $this->arrRoutes[] = new MJaxRoute($mixMethods, $strExtension, $strFunction, $objListener);
     }
     public function FindRoute(){
+        //_dv($this->arrRoutes);
         foreach($this->arrRoutes as $intIndex => $objRoute){
             if($objRoute->Matches(
                 $_SERVER['REQUEST_METHOD'],

@@ -18,7 +18,9 @@ class MJaxRoute{
     }
     public function Matches($strTestMethod, $strTestExtension){
         $blnMethodPass = false;
+
         foreach($this->arrMethod as $intIndex => $strMethod){
+            $strMethod = strtoupper($strMethod);
             if($strTestMethod == $strMethod){
                 $blnMethodPass = true;
             }

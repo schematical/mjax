@@ -1,5 +1,5 @@
 <?php
- define("__MJAX__", dirname(dirname(__FILE__ ).'/MJax'));
+define("__MJAX__", dirname(dirname(__FILE__ ).'/MJax'));
 define("__MJAX_CORE__", __MJAX__ . "/_core");
 define("__MJAX_CORE_VIEW__", __MJAX_CORE__ . '/view');
 define("__MJAX_CORE_ASSET_URL__", MLCApplication::GetAssetUrl('', 'MJax'));
