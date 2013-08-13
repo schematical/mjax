@@ -28,6 +28,7 @@ MLCApplicationBase::$arrClassFiles['MJaxCheckBox'] = __MJAX_CORE__ . '/MJaxCheck
 MLCApplicationBase::$arrClassFiles['MJaxFormStateHandler'] = __MJAX_CORE__ . '/MJaxFormStateHandler.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxTable'] = __MJAX_CORE__ . '/MJaxTable.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxTableRow'] = __MJAX_CORE__ . '/MJaxTableRow.class.php';
+MLCApplicationBase::$arrClassFiles['MJaxTableColumn'] = __MJAX_CORE__ . '/MJaxTableColumn.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxRadioBox'] = __MJAX_CORE__ . '/MJaxRadioBox.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxUploadBox'] = __MJAX_CORE__ . '/MJaxUploadBox.class.php';
 MLCApplicationBase::$arrClassFiles['MJaxRoute'] = __MJAX_CORE__ . '/MJaxRoute.class.php';

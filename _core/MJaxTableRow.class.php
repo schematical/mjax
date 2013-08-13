@@ -8,8 +8,13 @@ class MJaxTableRow extends MJaxControl{
 			$this->arrData[] = $mixData;
 		}	
 	 }
-	 public function GetData($strPropName){
-	 	
+	 public function GetData($strPropName = null){
+         if(is_null($strPropName)){
+             return $this->arrData;
+         }
+        if(!array_key_exists($strPropName, $this->arrData)){
+            return null;
+        }
 	 	return $this->arrData[$strPropName];
 	 }
 	 public function Render($blnPrint = true, $blnRenderAsAjax = false){
@@ -22,26 +27,14 @@ class MJaxTableRow extends MJaxControl{
         }
         $strRendered = parent::Render();
         $strHeader = sprintf("<%s id='%s' name='%s' %s>\n", $strElementOverride, $this->strControlId, $this->strControlId, $this->GetAttrString());
-		foreach($this->objParentControl->GetColumnTitles() as $strTitle => $mixData){
-			if(array_key_exists($strTitle, $this->arrData)){
+		foreach($this->objParentControl->GetColumns() as $strKey => $objColumn){
 
-				$mixData = $this->arrData[$strTitle];
 
-				if(
-					(is_object($mixData)) &&
-					($mixData instanceof MJaxControl)
-				){
-					$strHtml = $mixData->Render(false);
-					$strRendered .= '<td>' . $strHtml . '</td>';
-				}/*elseif(is_callable($mixData)){
-                    $strHtml = $mixData($this);
-                    $strRendered .= '<td>' . $strHtml . '</td>';
-                }*/else{
-					$strRendered .= '<td>' . $mixData . '</td>';
-				}
-			}else{
-				$strRendered .= '<td>&nbsp;</td>';
-			}
+
+                $strRendered .= $objColumn->Render($this);
+
+
+
 		}
 		$strFooter = sprintf("</%s>", $strElementOverride);
         if(!$blnRenderAsAjax){

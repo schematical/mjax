@@ -6,7 +6,7 @@ class MJaxTable extends MJaxControl{
 	protected $strFooterText = null;
     protected $arrColumnTitles = array();
 	protected $arrDataEntites = array();
-	public function GetColumnTitles(){
+	public function GetColumns(){
 		return $this->arrColumnTitles;
 	}
 	public function AddRow($arrColumnData = null){
@@ -31,11 +31,11 @@ class MJaxTable extends MJaxControl{
 		$arrColumnData = array();
 		foreach($this->arrDataEntites as $objEntity){
 
-        	foreach($this->arrColumnTitles as $strTitle => $mixData){
+        	foreach($this->arrColumnTitles as $strKey => $objColumn){
 
-                if(is_string($mixData)){
-        		    $arrColumnData[$strTitle] = $objEntity->$mixData;
-                }
+
+        		    $arrColumnData[$strKey] = $objEntity->$strKey;
+
 			}
 			$objRow = $this->AddRow($arrColumnData);
 			$objRow->ActionParameter = $objEntity->GetId();
@@ -44,18 +44,15 @@ class MJaxTable extends MJaxControl{
 		
 		
 	}
-	public function AddColumn($strTitle, $mixColumn = null){
-        if(is_string($mixColumn)){
-            if(!is_null($mixColumn)){
-                $this->arrColumnTitles[$mixColumn] = $strTitle;
-            }else{
-                $this->arrColumnTitles[$strTitle] = $strTitle;
-            }
-        }elseif(is_callable($mixColumn)){
-            $this->arrColumnTitles[$strTitle] = $mixColumn;
+	public function AddColumn($strKey, $strTitle, $objRenderObject = null, $strRenderFunction = null){
+
+        if($strTitle instanceof MJaxTableColumn){
+            $this->arrColumnTitles[$strKey] = $strTitle;
         }else{
+            $this->arrColumnTitles[$strKey] = new MJaxTableColumn($strKey, $strTitle, $objRenderObject, $strRenderFunction);
+        }/*else{
             throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
-        }
+        }*/
 	}
     public function Render($blnPrint = true, $blnRenderAsAjax = false){
         if($blnRenderAsAjax){
@@ -101,7 +98,7 @@ class MJaxTable extends MJaxControl{
 		$strRendered = '<thead>';
 		$strRendered .= '<tr>';
 		foreach($this->arrColumnTitles as $strTitle => $mixProp){
-			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $mixProp);
+			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $mixProp->GetTitle());
 		}
 		
 		$strRendered .= '</tr>';
@@ -144,7 +141,8 @@ class MJaxTable extends MJaxControl{
     /////////////////////////
     public function __set($strName, $mixValue) {
         $this->blnModified = true;
-        switch ($strName) {              
+        switch ($strName) {
+            case "Rows": return $this->arrChildControls = $mixValue; //I hope they know what they are doing
             default:
                 try {
                     return parent::__set($strName, $mixValue);
