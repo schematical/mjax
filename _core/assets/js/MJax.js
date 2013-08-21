@@ -45,7 +45,8 @@ var MJax = {
         	
         	if((jEle.length > 0)){
 	        	if(
-	        		(jEle[0].nodeName == 'DIV')
+	        		(jEle[0].nodeName == 'DIV') ||
+                    (jEle[0].nodeName == 'A')
 	        	){
 	            	jEle.html(strHtml);
 		        }else{
@@ -230,7 +231,8 @@ var MJax = {
 	        	
 	        	if((jEle.length > 0)){
 		        	if(
-		        		(jEle[0].nodeName == 'DIV')
+                            (jEle[0].nodeName == 'DIV') ||
+                            (jEle[0].nodeName == 'A')
 		        	){
 		            	jEle.html(strValue);
 			        }else{

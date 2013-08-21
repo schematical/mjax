@@ -20,6 +20,7 @@ class MJaxTable extends MJaxControl{
 		}
 		return $objRow;
 	}
+
 	public function SetDataEntites($arrDataEntites){
 		//$this->strDataMode = MJaxTableDataMode::DATA_ENTITY;
 		if(!is_array($arrDataEntites)){
@@ -54,6 +55,13 @@ class MJaxTable extends MJaxControl{
             throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
         }*/
 	}
+    public function RemoveColumn($strKey){
+        if(array_key_exists($strKey, $this->arrColumnTitles)){
+            unset($this->arrColumnTitles[$strKey]);
+            return true;
+        }
+        return false;
+    }
     public function Render($blnPrint = true, $blnRenderAsAjax = false){
         if($blnRenderAsAjax){
             $strElementOverride = 'control';
