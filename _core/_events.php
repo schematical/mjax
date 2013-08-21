@@ -188,4 +188,14 @@ class MJaxTimeoutEvent extends MJaxEventBase{
         return $strRendered;
     }
 }
+
+/*
+ * New table edit event 8/21/13
+ */
+class MJaxTableEditInitEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-edit-init';
+}
+class MJaxTableEditSaveEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-edit-save';
+}
 ?>

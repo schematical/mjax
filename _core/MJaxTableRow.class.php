@@ -1,6 +1,19 @@
 <?php
 class MJaxTableRow extends MJaxControl{
 	 protected $arrData = array();
+
+     public $lnkEdit = null;
+     public $arrEditControls = array();
+     public function IsSelected(){
+         $objRow = $this->objParentControl->SelectedRow;
+         if(
+             (!is_null($objRow)) &&
+            ($objRow->ControlId == $this->strControlId)
+         ){
+             return true;
+         }
+         return false;
+     }
 	 public function AddData($mixData, $strPropName = null){
 	 	if(!is_null($strPropName)){
 			$this->arrData[$strPropName] = $mixData;	
@@ -49,4 +62,71 @@ class MJaxTableRow extends MJaxControl{
             return $strRendered;
         }
 	 }
+    public function InitEditControls(){
+        //$objRow->RemoveAllActions('click');
+        $this->lnkEdit = new MJaxLinkButton($this);
+        $this->lnkEdit->AddCssClass('btn');
+        $this->lnkEdit->Text = 'Edit';
+        $this->lnkEdit->ActionParameter = $this->ActionParameter;
+
+        $this->lnkEdit->AddAction($this, 'lnkEdit_click');
+        $this->AddData(
+            $this->lnkEdit, 'edit'
+        );
+    }
+    public function lnkEdit_click(){
+        //Decided weither it is an edit init or an edit save event
+        if(!$this->IsSelected()){
+            $this->objParentControl->SelectedRow = $this;
+            $this->objForm->TriggerControlEvent(
+                $this->objParentControl->ControlId,
+                'mjax-table-edit-init'
+            );
+
+            $this->lnkEdit->Text = 'Save';
+            $this->blnModified = true;
+        }else{
+            foreach($this->arrEditControls as $strKey => $ctlEdit){
+                if(!is_object($this->arrData[$strKey])){
+                    $this->arrData[$strKey] = $ctlEdit->GetValue();
+                }
+            }
+            $this->objForm->TriggerControlEvent(
+                $this->objParentControl->ControlId,
+                'mjax-table-edit-save'
+            );
+            $this->objParentControl->SelectedRow = null;
+            //Remove all edit controls
+            /*foreach($this->arrEditControls as $strKey => $ctlEdit){
+                $ctlEdit->Remove();
+                unset($this->arrEditControls[$strKey]);
+            }*/
+
+            $this->lnkEdit->Text = 'Edit';
+            $this->blnModified = true;
+        }
+        //trigger event accordingly
+
+
+    }
+    public function UpdateEntity(BaseEntity $objEntity){
+        foreach($this->arrData as $strKey => $mixValue){
+            if(!is_object($mixValue)){
+                try{
+                    $objEntity->__set($strKey, $mixValue);
+                }catch(MLCMissingPropertyException $e){
+                    //do nothing
+
+                }
+            }
+        }
+
+        $objEntity->Save();
+        if(!array_key_exists($objEntity->getPKey(), $this->arrData)){
+            $this->arrData[$objEntity->getPKey()] = $objEntity->getId();
+        }
+    }
+
+
+
 }

@@ -3,7 +3,6 @@
  * This is a basic dif for use with the MJax Framework
  */
 class MJaxTable extends MJaxControl{
-    protected $rowSelected = null;
 	protected $strFooterText = null;
     protected $arrColumnTitles = array();
 	protected $arrDataEntites = array();
@@ -46,12 +45,12 @@ class MJaxTable extends MJaxControl{
 		
 		
 	}
-	public function AddColumn($strKey, $strTitle, $objRenderObject = null, $strRenderFunction = null, $strEditControl = 'MJaxTextBox'){
+	public function AddColumn($strKey, $strTitle, $objRenderObject = null, $strRenderFunction = null){
 
         if($strTitle instanceof MJaxTableColumn){
             $this->arrColumnTitles[$strKey] = $strTitle;
         }else{
-            $this->arrColumnTitles[$strKey] = new MJaxTableColumn($strKey, $strTitle, $objRenderObject, $strRenderFunction, $strEditControl);
+            $this->arrColumnTitles[$strKey] = new MJaxTableColumn($strKey, $strTitle, $objRenderObject, $strRenderFunction);
         }/*else{
             throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
         }*/
@@ -152,8 +151,8 @@ class MJaxTable extends MJaxControl{
     public function __set($strName, $mixValue) {
         $this->blnModified = true;
         switch ($strName) {
+
             case "Rows": return $this->arrChildControls = $mixValue; //I hope they know what they are doing
-            case "SelectedRow": return $this->rowSelected = $mixValue;
             default:
                 try {
                     return parent::__set($strName, $mixValue);
@@ -162,38 +161,6 @@ class MJaxTable extends MJaxControl{
                     throw $objExc;
                 }
         }
-    }
-    public function InitEditControls(){
-        foreach($this->Rows as $intIndex => $objRow){
-            $objRow->InitEditControls();
-        }
-        $this->AddColumn('edit','');
-    }
-    public function InitRowControl($strKey, $strText, $ctlAction, $funAction, $strCssClasses = 'btn', $strCtlClassName = 'MJaxLinkButton'){
-        foreach($this->Rows as $intIndex => $objRow){
-            //$objRow->RemoveAllActions('click');
-            $ctlControl = new $strCtlClassName($objRow);
-            $ctlControl->AddCssClass($strCssClasses);
-            $ctlControl->Text = $strText;
-            $ctlControl->ActionParameter = $objRow->ActionParameter;
-
-            $ctlControl->AddAction($ctlAction, $funAction);
-            $objRow->AddData(
-                $ctlControl, $strKey
-            );
-        }
-        $this->AddColumn($strKey,'');
-    }
-    public function AddEmptyRow(){
-        foreach($this->arrColumnTitles as $strKey => $objColumn){
-            $arrColumnData[$strKey] = null;
-        }
-        $objRow = $this->AddRow($arrColumnData);
-        $objRow->InitEditControls();
-        $objRow->ActionParameter = -1;
-        $this->rowSelected = $objRow;
-        $objRow->lnkEdit->Text = 'Add';
-        return $objRow;
     }
 }
 ?>

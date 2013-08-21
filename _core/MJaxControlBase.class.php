@@ -2,7 +2,7 @@
 /* 
  * This control will have be the base for all MJax controls
  */
-class MJaxControlBase{
+abstract class MJaxControlBase{
 	protected static $arrExtensions = array();
     protected $strControlId = null;
     protected $arrEvents = array();
@@ -366,5 +366,6 @@ class MJaxControlBase{
 	public static function AddExtension($objExtension){
 		self::$arrExtensions[] = $objExtension;
 	}
+
 }
 ?>

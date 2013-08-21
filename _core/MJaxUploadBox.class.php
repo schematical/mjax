@@ -112,7 +112,15 @@ class MJaxUploadBox extends MJaxControl{
 					break;
 			}
 		}
-
+    public function SetValue($mixValue){
+        return false;$this->arrFileData = $mixValue;
+    }
+    public function GetValue(){
+       /* if(
+            (!is_null($this->arrFileData)) &&
+            (array_key_exists(''))*/
+        return $this->arrFileData;
+    }
     
 }
 ?>

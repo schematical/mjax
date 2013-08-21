@@ -9,7 +9,7 @@ class MJaxTextBox extends MJaxControl{
     protected $strTextMode = null;
     public function __construct($objParentControl,$strControlId = null, $arrAttrs = null) {
         parent::__construct($objParentControl,$strControlId, $arrAttrs);
-        $this->strTextMode = MJaxTextMode::SingleLine;       
+        $this->strTextMode = MJaxTextMode::SingleLine;
     }
     public function Render($blnPrint = true){
         $strRendered = parent::Render();
@@ -134,7 +134,12 @@ class MJaxTextBox extends MJaxControl{
 					break;
 			}
 		}
-
+    public function SetValue($mixValue){
+        return $this->strText = $mixValue;
+    }
+    public function GetValue(){
+        return $this->strText;
+    }
     
 }
 ?>

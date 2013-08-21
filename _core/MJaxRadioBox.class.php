@@ -54,5 +54,11 @@ class MJaxRadioBox extends MJaxControl{
                 return parent::__set($strName, $mixValue);               
         }
     }
+    public function SetValue($mixValue){
+        return $this->blnChecked = $mixValue;
+    }
+    public function GetValue(){
+        return $this->blnChecked;
+    }
 }
 ?>

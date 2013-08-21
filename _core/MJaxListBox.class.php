@@ -117,5 +117,18 @@ class MJaxListBox extends MJaxControl{
                
         }
     }
+    public function SetValue($mixValue){
+        foreach($this->arrListItems as $objListItem){
+            if($objListItem->Value == $mixValue){
+                $objListItem->Selected = true;
+            }else{
+                $objListItem->Selected = false;
+            }
+        }
+        return true;
+    }
+    public function GetValue(){
+        return $this->SelectedValue;
+    }
 }
 ?>

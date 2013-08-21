@@ -11,5 +11,12 @@ class MJaxControlProxy extends MJaxControl{
     public function Render(){
         throw new Exception("A MJaxControlProxy instance cannot be rendered");
     }
+    public function SetValue($mixValue){
+        return false;
+    }
+    public function GetValue(){
+        return null;
+    }
+
 }
 ?>
