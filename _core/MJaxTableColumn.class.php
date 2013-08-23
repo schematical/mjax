@@ -6,6 +6,7 @@ class MJaxTableColumn{
     protected $objRenderObject = null;
     protected $strRenderFunction = null;
     protected $strControlClass = null;
+    protected $strEditCtlInitMethod = null;
     public function __construct($strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strControlClass = 'MJaxTextBox'){
         $this->strKey = $strKey;
 
@@ -13,9 +14,13 @@ class MJaxTableColumn{
 
         $this->objRenderObject = $objRenderObject;
         $this->strRenderFunction = $strFunction;
-        $this->strControlClass = $strControlClass;
-        error_log($strControlClass);
-
+        if(method_exists($this->objRenderObject, $strControlClass)){
+            $this->strEditCtlInitMethod = $strControlClass;
+        }elseif(class_exists($strControlClass)){
+            $this->strControlClass = $strControlClass;
+        }else{
+            throw new Exception("Cannot figure out what control class or render method was passed in for \$strControlClass parameter");
+        }
     }
     public function Render($objRow){
 
@@ -32,14 +37,7 @@ class MJaxTableColumn{
             }else{
                 //if is in edit mode
                 if($objRow->IsSelected()){
-                    if(!array_key_exists($this->strKey, $objRow->arrEditControls)){
-                        $strClassName = $this->strControlClass;
-                        $objRow->arrEditControls[$this->strKey] = new $strClassName(
-                            $objRow
-                        );
-                    }
-                    $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
-                    $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
+                    $strHtml = $this->RenderIndvControl($objRow);
                 }else{
                     $strHtml = $mixData;
                 }
@@ -49,14 +47,7 @@ class MJaxTableColumn{
         }else{
             if($objRow->IsSelected()){
 
-                if(!array_key_exists($this->strKey, $objRow->arrEditControls)){
-                    $strClassName = $this->strControlClass;
-                    $objRow->arrEditControls[$this->strKey] = new $strClassName(
-                        $objRow
-                    );
-                }
-                $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
-                $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
+                $strHtml = $this->RenderIndvControl($objRow);
             }else{
                 $strHtml = '&nbsp;';
             }
@@ -67,5 +58,23 @@ class MJaxTableColumn{
     }
     public function GetTitle(){
         return $this->strTitle;
+    }
+    public function RenderIndvControl($objRow){
+        $mixData = $objRow->GetData($this->strKey);
+        if(!array_key_exists($this->strKey, $objRow->arrEditControls)){
+            if(!is_null($this->strEditCtlInitMethod)){
+                $objRow->arrEditControls[$this->strKey] = $this->objRenderObject->{$this->strEditCtlInitMethod}($objRow, $mixData, $this->strKey);
+            }elseif(!is_null($this->strControlClass)){
+                $strClassName = $this->strControlClass;
+                $objRow->arrEditControls[$this->strKey] = new $strClassName(
+                    $objRow
+                );
+            }else{
+                //I think this is the remove button
+            }
+        }
+        $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
+        $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
+        return $strHtml;
     }
 }

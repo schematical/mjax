@@ -50,6 +50,7 @@ abstract class MJaxTextMode{
 	const Time = 'time';
 	const Url = 'url';
 	const Week = 'week';
+    const Hidden = 'hidden';
 }
 abstract class MJaxResponseFormat{
 	const JSON = 'json';
