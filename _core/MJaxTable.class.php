@@ -25,7 +25,11 @@ class MJaxTable extends MJaxControl{
 	public function SetDataEntites($arrDataEntites){
 		//$this->strDataMode = MJaxTableDataMode::DATA_ENTITY;
 		if(!is_array($arrDataEntites)){
-			$this->arrDataEntites = $arrDataEntites->GetCollection();
+            if($arrDataEntites instanceof BaseEntityCollection){
+			    $this->arrDataEntites = $arrDataEntites->GetCollection();
+            }else{
+                $this->arrDataEntites = array($arrDataEntites);
+            }
 		}else{
 			$this->arrDataEntites = $arrDataEntites;
 		}
@@ -43,7 +47,7 @@ class MJaxTable extends MJaxControl{
 			$objRow->ActionParameter = $objEntity->GetId();
 			//_dp($objRow);
 		}
-		
+		$this->blnModified = true;
 		
 	}
 	public function AddColumn($strKey, $strTitle, $objRenderObject = null, $strRenderFunction = null, $strEditControl = 'MJaxTextBox'){
