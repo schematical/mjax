@@ -14,11 +14,32 @@ class MJaxTable extends MJaxControl{
 		$objRow = new MJaxTableRow($this);
 		//TODO: Possibly allow user to set default row styling
 		if(!is_null($arrColumnData)){
-			
-			foreach($arrColumnData as $strPropName => $strData){
-				$objRow->AddData($strData, $strPropName);
-			}
+            if(
+                (is_object($arrColumnData)) &&
+                ($arrColumnData instanceof BaseEntity)
+            ){
+                $mixEntity = $arrColumnData;
+                $arrColumnData = array();
+
+                foreach($this->arrColumnTitles as $strKey => $objColumn){
+
+                    try{
+                        $arrColumnData[$strKey] = $mixEntity->$strKey;
+                    }catch(Exception $e){
+                        //Do nothing right now
+                    }
+
+                }
+            }
+            if(is_array($arrColumnData)){
+                foreach($arrColumnData as $strPropName => $strData){
+                    $objRow->AddData($strData, $strPropName);
+                }
+            }else{
+                throw new Exception('Invalid row data passed in');
+            }
 		}
+        $this->blnModified = true;
 		return $objRow;
 	}
 
@@ -33,16 +54,18 @@ class MJaxTable extends MJaxControl{
 		}else{
 			$this->arrDataEntites = $arrDataEntites;
 		}
-
+        //_dv($arrDataEntites);
 		$arrColumnData = array();
 		foreach($this->arrDataEntites as $objEntity){
 
         	foreach($this->arrColumnTitles as $strKey => $objColumn){
 
-
+                try{
         		    $arrColumnData[$strKey] = $objEntity->$strKey;
+                }catch(MLCMissingPropertyException $e) {}
 
 			}
+            $arrColumnData['_entity'] = $objEntity;
 			$objRow = $this->AddRow($arrColumnData);
 			$objRow->ActionParameter = $objEntity->GetId();
 			//_dp($objRow);
@@ -68,6 +91,7 @@ class MJaxTable extends MJaxControl{
         return false;
     }
     public function Render($blnPrint = true, $blnRenderAsAjax = false){
+
         if($blnRenderAsAjax){
             $strElementOverride = 'control';
             $this->Attr('transition', $this->strTransition);
@@ -88,6 +112,7 @@ class MJaxTable extends MJaxControl{
         }else{
             $strRendered = $strHeader . MLCApplication::XmlEscape(trim($strRendered)) . $strFooter;
         }
+
         $this->blnModified = false;
         if($blnPrint){
             echo($strRendered);
@@ -141,12 +166,8 @@ class MJaxTable extends MJaxControl{
             case "Rows": return $this->arrChildControls;
             case "SelectedRow": return $this->rowSelected;
             default:
-                try {
-                    return parent::__get($strName);
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return parent::__get($strName);
+
         }
     }
 
@@ -159,12 +180,7 @@ class MJaxTable extends MJaxControl{
             case "Rows": return $this->arrChildControls = $mixValue; //I hope they know what they are doing
             case "SelectedRow": return $this->rowSelected = $mixValue;
             default:
-                try {
-                    return parent::__set($strName, $mixValue);
-                } catch (QCallerException $objExc) {
-                    $objExc->IncrementOffset();
-                    throw $objExc;
-                }
+                return parent::__set($strName, $mixValue);
         }
     }
     public function InitEditControls(){

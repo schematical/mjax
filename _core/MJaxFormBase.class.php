@@ -719,6 +719,9 @@ class MJaxFormBase{
         return null;
     }
     public function GetRouteExtension(){
+        if(array_key_exists('mjax-route-ext', $_GET)){
+            return $_GET['mjax-route-ext'];
+        }
         return pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
     }
 	public function __call($strName, $arrArguments){
@@ -742,6 +745,51 @@ class MJaxFormBase{
 	public static function AddExtension($objExtension){
 		self::$arrExtensions[] = $objExtension;
 	}
+    //New stuff
+    public function After($mixControl, $mixHtml){
+        $this->InjectControl($mixControl, $mixHtml, 'after');
+    }
+    public function Before($mixControl, $mixHtml){
+        $this->InjectControl($mixControl, $mixHtml, 'before');
+    }
+    public function Append($mixControl, $mixHtml){
+        $this->InjectControl($mixControl, $mixHtml, 'append');
+    }
+    public function Prepend($mixControl, $mixHtml){
+        $this->InjectControl($mixControl, $mixHtml, 'prepend');
+    }
+    protected function InjectControl($mixControl, $mixHtml, $strMethod){
+        if(is_string($mixControl)){
+            $strSelector = $mixControl;
+        }elseif(
+            (is_object($mixControl)) &&
+            ($mixControl instanceof MJaxControl)
+        ){
+            $strSelector = '#' . $mixControl->ControlId;
+        }else{
+            throw new Exception("Invalid Control/Element selector passed in");
+        }
+
+
+        if(is_string($mixHtml)){
+            $strHtml = $mixHtml;
+        }elseif(
+            (is_object($mixHtml)) &&
+            ($mixHtml instanceof MJaxControl)
+        ){
+            $strHtml = $mixHtml->Render(false);
+        }else{
+            throw new Exception("Invalid Control/Element selector passed in");
+        }
+        $this->AddJSCall(
+            sprintf(
+                '$("%s").%s("%s")',
+                $strSelector,
+                $strMethod,
+                $strHtml
+            )
+        );
+    }
 	
 }
 function __MJaxForm_EvaluateTemplate_ObHandler($strBuffer) {

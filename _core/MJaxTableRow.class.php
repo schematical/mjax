@@ -126,6 +126,20 @@ class MJaxTableRow extends MJaxControl{
             $this->arrData[$objEntity->getPKey()] = $objEntity->getId();
         }
     }
+    public function UpdateRow(BaseEntity $objEntity){
+        foreach($this->arrData as $strKey => $mixValue){
+            if(!is_object($mixValue)){
+                try{
+                    error_log($strKey . ' = ' . $objEntity->__get($strKey));
+                    $this->arrData[$strKey] = $objEntity->__get($strKey);
+                }catch(MLCMissingPropertyException $e){
+                    //do nothing
+
+                }
+            }
+        }
+        $this->blnModified = true;
+    }
 
 
 

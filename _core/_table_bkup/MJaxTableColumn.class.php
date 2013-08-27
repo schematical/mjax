@@ -24,7 +24,7 @@ class MJaxTableColumn{
                 $strHtml = $mixData->Render(false);
                 $strRendered .= '<td>' . $strHtml . '</td>';
             }elseif(!is_null($this->objRenderObject)){
-                $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $this);
+                $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $objRow, $this);
                 $strRendered .= '<td>' . $strHtml . '</td>';
             }else{
                 $strRendered .= '<td>' . $mixData . '</td>';

@@ -26,32 +26,34 @@ class MJaxTableColumn{
 
         $strRendered = '';
         $mixData = $objRow->GetData($this->strKey);
-        if(!is_null($mixData)){
-            if(
-                (is_object($mixData)) &&
-                ($mixData instanceof MJaxControl)
-            ){
-                $strHtml = $mixData->Render(false);
-            }elseif(!is_null($this->objRenderObject)){
-                $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $this);
-            }else{
-                //if is in edit mode
-                if($objRow->IsSelected()){
-                    $strHtml = $this->RenderIndvControl($objRow);
-                }else{
-                    $strHtml = $mixData;
-                }
-            }
-
-
+        if(!is_null($this->objRenderObject)){
+            $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $objRow, $this);
         }else{
-            if($objRow->IsSelected()){
+            if(!is_null($mixData)){
+                if(
+                    (is_object($mixData)) &&
+                    ($mixData instanceof MJaxControl)
+                ){
+                    $strHtml = $mixData->Render(false);
+                }else{
+                    //if is in edit mode
+                    //if($objRow->IsSelected()){
+                        $strHtml = $this->RenderIndvControl($objRow);
+                    //}else{
+                        $strHtml = $mixData;
+                    //}
+                }
 
-                $strHtml = $this->RenderIndvControl($objRow);
+
             }else{
-                $strHtml = '&nbsp;';
-            }
+                //if($objRow->IsSelected()){
 
+                    $strHtml = $this->RenderIndvControl($objRow);
+                //}else{
+                    $strHtml = '&nbsp;';
+                //}
+
+            }
         }
         $strRendered .= '<td>' . $strHtml . '</td>';
         return $strRendered;

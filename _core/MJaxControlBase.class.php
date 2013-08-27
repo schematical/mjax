@@ -232,7 +232,7 @@ abstract class MJaxControlBase{
 
     public function Attr($strName, $strValue = false){
         if($strValue === false){//This is false for a reason
-            if(key_exists($strName, $this->arrAttr)){
+            if(array_key_exists($strName, $this->arrAttr)){
                 return $this->arrAttr[$strName];
             }else{
                 return null;
@@ -271,6 +271,11 @@ abstract class MJaxControlBase{
             unset($this->objParentControl->arrChildControls[$this->strControlId]);
         }
     	$this->objForm->RemoveControl($this->strControlId);
+    }
+    public function RemoveAllChildControls(){
+        foreach($this->arrChildControls as $strControlId => $objChildControl){
+            $objChildControl->Remove();
+        }
     }
     /////////////////////////
     // Public Properties: GET
@@ -363,6 +368,31 @@ abstract class MJaxControlBase{
 			); 
         } 
 	}
+    public function After($mixHtml){
+        $this->objForm->After(
+            $this->strControlId,
+            $mixHtml
+        );
+    }
+    public function Before($mixHtml){
+        $this->objForm->Before(
+            $this->strControlId,
+            $mixHtml
+        );
+    }
+    public function Append($mixHtml){
+        $this->objForm->After(
+            $this->strControlId,
+            $mixHtml
+        );
+    }
+    public function Prepend($mixHtml){
+        $this->objForm->Before(
+            $this->strControlId,
+            $mixHtml
+        );
+    }
+
 	public static function AddExtension($objExtension){
 		self::$arrExtensions[] = $objExtension;
 	}
