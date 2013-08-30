@@ -5,19 +5,27 @@ class MJaxTableColumn{
     protected $strTitle = null;
     protected $objRenderObject = null;
     protected $strRenderFunction = null;
-    protected $strControlClass = null;
+
+    protected $strEditControlClass = null;
     protected $strEditCtlInitMethod = null;
-    public function __construct($strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strControlClass = 'MJaxTextBox'){
+
+    protected $strControlClass = null;
+    protected $strControlText = null;
+    protected $ctlControlAction = null;
+    protected $funControlAction = null;
+    protected $strControlCssClasses = 'btn';
+
+    public function __construct($strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
         $this->strKey = $strKey;
 
         $this->strTitle = $mixTitle;
 
         $this->objRenderObject = $objRenderObject;
         $this->strRenderFunction = $strFunction;
-        if(method_exists($this->objRenderObject, $strControlClass)){
-            $this->strEditCtlInitMethod = $strControlClass;
-        }elseif(class_exists($strControlClass)){
-            $this->strControlClass = $strControlClass;
+        if(method_exists($this->objRenderObject, $strEditControlClass)){
+            $this->strEditCtlInitMethod = $strEditControlClass;
+        }elseif(class_exists($strEditControlClass)){
+            $this->strEditControlClass = $strEditControlClass;
         }else{
             throw new Exception("Cannot figure out what control class or render method was passed in for \$strControlClass parameter");
         }
@@ -66,8 +74,8 @@ class MJaxTableColumn{
         if(!array_key_exists($this->strKey, $objRow->arrEditControls)){
             if(!is_null($this->strEditCtlInitMethod)){
                 $objRow->arrEditControls[$this->strKey] = $this->objRenderObject->{$this->strEditCtlInitMethod}($objRow, $mixData, $this->strKey);
-            }elseif(!is_null($this->strControlClass)){
-                $strClassName = $this->strControlClass;
+            }elseif(!is_null($this->strEditControlClass)){
+                $strClassName = $this->strEditControlClass;
                 $objRow->arrEditControls[$this->strKey] = new $strClassName(
                     $objRow
                 );
@@ -78,5 +86,81 @@ class MJaxTableColumn{
         $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
         $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
         return $strHtml;
+    }
+
+
+
+    /////////////////////////
+    // Public Properties: GET
+    /////////////////////////
+    public function __get($strName)
+    {
+        switch ($strName) {
+            case "Key":
+                return $this->strKey;
+            case "Title":
+                return $this->strTitle;
+            case "RenderObject":
+                return $this->objRenderObject;
+            case "RenderFunction":
+                return $this->strRenderFunction;
+
+            case "EditControlClass":
+                return $this->strEditControlClass;
+            case "EditCtlInitMethod":
+                return $this->strEditCtlInitMethod;
+
+
+            case "ControlClass":
+                return $this->strControlClass;
+            case "ControlText":
+                return $this->strControlText;
+            case "ControlActionObject":
+                return $this->ctlControlAction;
+            case "ControlActionFunction":
+                return $this->funControlAction;
+            case "ControlCssClasses":
+                return $this->strControlCssClasses;
+            default:
+                //parent::__get($strName);
+                throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);
+        }
+    }
+
+    /////////////////////////
+    // Public Properties: SET
+    /////////////////////////
+    public function __set($strName, $mixValue)
+    {
+        switch ($strName) {
+            case "Key":
+                return $this->strKey = $mixValue;
+            case "Title":
+                return $this->strTitle = $mixValue;
+            case "RenderObject":
+                return $this->objRenderObject = $mixValue;
+            case "RenderFunction":
+                return $this->strRenderFunction = $mixValue;
+
+            case "EditControlClass":
+                return $this->strEditControlClass = $mixValue;
+            case "EditCtlInitMethod":
+                return $this->strEditCtlInitMethod = $mixValue;
+
+
+            case "ControlClass":
+                return $this->strControlClass = $mixValue;
+            case "ControlText":
+                return $this->strControlText = $mixValue;
+            case "ControlActionObject":
+                return $this->ctlControlAction = $mixValue;
+            case "ControlActionFunction":
+                return $this->funControlAction = $mixValue;
+            case "ControlCssClasses":
+                return $this->strControlCssClasses = $mixValue;
+            default:
+                //parent::__set($strName, $mixValue);
+                throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);
+        }
     }
 }

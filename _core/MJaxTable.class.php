@@ -44,6 +44,7 @@ class MJaxTable extends MJaxControl{
 	}
 
 	public function SetDataEntites($arrDataEntites){
+
 		//$this->strDataMode = MJaxTableDataMode::DATA_ENTITY;
 		if(!is_array($arrDataEntites)){
             if($arrDataEntites instanceof BaseEntityCollection){
@@ -70,6 +71,7 @@ class MJaxTable extends MJaxControl{
 			$objRow->ActionParameter = $objEntity->GetId();
 			//_dp($objRow);
 		}
+        $this->RefreshControls();
 		$this->blnModified = true;
 		
 	}
@@ -82,6 +84,7 @@ class MJaxTable extends MJaxControl{
         }/*else{
             throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
         }*/
+        return $this->arrColumnTitles[$strKey];
 	}
     public function RemoveColumn($strKey){
         if(array_key_exists($strKey, $this->arrColumnTitles)){
@@ -190,19 +193,41 @@ class MJaxTable extends MJaxControl{
         $this->AddColumn('edit','');
     }
     public function InitRowControl($strKey, $strText, $ctlAction, $funAction, $strCssClasses = 'btn', $strCtlClassName = 'MJaxLinkButton'){
-        foreach($this->Rows as $intIndex => $objRow){
-            //$objRow->RemoveAllActions('click');
-            $ctlControl = new $strCtlClassName($objRow);
-            $ctlControl->AddCssClass($strCssClasses);
-            $ctlControl->Text = $strText;
-            $ctlControl->ActionParameter = $objRow->ActionParameter;
 
-            $ctlControl->AddAction($ctlAction, $funAction);
-            $objRow->AddData(
-                $ctlControl, $strKey
-            );
+        if(!array_key_exists($strKey, $this->arrColumnTitles)){
+            $objColumn = $this->AddColumn($strKey,'');
+            $objColumn->ControlClass = $strCtlClassName;
+            $objColumn->ControlText = $strText;
+            $objColumn->ControlCssClasses = $strCssClasses;
+            $objColumn->ControlActionObject = $ctlAction;
+            $objColumn->ControlActionFunction = $funAction;
+            $this->arrColumnTitles[$strKey] = $objColumn;
         }
-        $this->AddColumn($strKey,'');
+    }
+    public function RefreshControls(){
+        foreach($this->Rows as $intIndex => $objRow){
+            foreach($this->arrColumnTitles as $strKey => $objColumn){
+                //$objRow->RemoveAllActions('click');
+                $strCtlClassName = $objColumn->ControlClass;
+                if(!is_null($strCtlClassName) && is_null($objRow->GetData($strKey))){
+                    $ctlControl = new $strCtlClassName($objRow);
+                    $ctlControl->AddCssClass($objColumn->ControlCssClasses);
+                    $ctlControl->Text = $objColumn->ControlText;
+                    $ctlControl->ActionParameter = $objRow->ActionParameter;
+
+                    $ctlControl->AddAction(
+                        new MJaxClickEvent(),
+                        new MJaxServerControlAction(
+                            $objColumn->ControlActionObject,
+                            $objColumn->ControlActionFunction
+                        )
+                    );
+                    $objRow->AddData(
+                        $ctlControl, $strKey
+                    );
+                }
+            }
+        }
     }
     public function AddEmptyRow(){
         foreach($this->arrColumnTitles as $strKey => $objColumn){
