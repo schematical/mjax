@@ -202,9 +202,11 @@ class MJaxTable extends MJaxControl{
             $objColumn->ControlActionObject = $ctlAction;
             $objColumn->ControlActionFunction = $funAction;
             $this->arrColumnTitles[$strKey] = $objColumn;
+            $this->RefreshControls();
         }
     }
     public function RefreshControls(){
+
         foreach($this->Rows as $intIndex => $objRow){
             foreach($this->arrColumnTitles as $strKey => $objColumn){
                 //$objRow->RemoveAllActions('click');

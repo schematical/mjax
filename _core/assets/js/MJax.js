@@ -229,7 +229,7 @@ var MJax = {
                  }
                 var strSelector = "#" +  jControl.attr('id');
 	        	var jEle = $(strSelector);
-	        	
+                // $('body').off('change', strSelector);
 	        	if((jEle.length > 0)){
 		        	if(
                             (jEle[0].nodeName == 'DIV') ||
