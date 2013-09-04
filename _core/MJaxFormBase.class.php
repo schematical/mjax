@@ -758,6 +758,9 @@ class MJaxFormBase{
     public function Prepend($mixControl, $mixHtml){
         $this->InjectControl($mixControl, $mixHtml, 'prepend');
     }
+    public function ReplaceWith($mixControl, $mixHtml){
+        $this->InjectControl($mixControl, $mixHtml, 'replaceWith');
+    }
     protected function InjectControl($mixControl, $mixHtml, $strMethod){
         if(is_string($mixControl)){
             $strSelector = $mixControl;

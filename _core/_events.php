@@ -198,4 +198,8 @@ class MJaxTableEditInitEvent extends MJaxEventBase{
 class MJaxTableEditSaveEvent extends MJaxEventBase{
     protected $strEventName = 'mjax-table-edit-save';
 }
+class MJaxTableSelectEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-select';
+}
+
 ?>

@@ -381,13 +381,19 @@ abstract class MJaxControlBase{
         );
     }
     public function Append($mixHtml){
-        $this->objForm->After(
+        $this->objForm->Append(
             $this->strControlId,
             $mixHtml
         );
     }
     public function Prepend($mixHtml){
-        $this->objForm->Before(
+        $this->objForm->Prepend(
+            $this->strControlId,
+            $mixHtml
+        );
+    }
+    public function ReplaceWith($mixControl, $mixHtml){
+        $this->objForm->ReplaceWith(
             $this->strControlId,
             $mixHtml
         );

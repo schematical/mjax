@@ -26,6 +26,25 @@ var MJax = {
         this.funMainPageLoad = function(){};
 
 
+        //Table Stuff
+        $('body').on('click', '.mjax-td',function(objEvent){
+            var jThis = $(this);
+            var jTable = jThis.closest('table');
+            var jRow = jThis.closest('tr');
+            var objData = {};
+            objData[jTable.attr('id')+ '_data'] = {
+                'row':jRow.attr('id'),
+                'column':jThis.attr('id'),
+                'column_key':jThis.attr('data-key')
+            };
+            MJax.TriggerControlEvent(
+                objEvent,
+                '#'+ jTable.attr('id'),
+                'mjax-table-select',
+                objData
+            );
+        });
+
         //ControlSpecific
         /*$('.MJaxLinkButton').each(function(){
             var jThis = $(this);

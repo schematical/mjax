@@ -1,6 +1,6 @@
 <?php
 class MJaxTableColumn{
-
+    protected $objTable = null;
     protected $strKey = null;
     protected $strTitle = null;
     protected $objRenderObject = null;
@@ -15,7 +15,8 @@ class MJaxTableColumn{
     protected $funControlAction = null;
     protected $strControlCssClasses = 'btn';
 
-    public function __construct($strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
+    public function __construct($objTable, $strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
+        $this->objTable = $objTable;
         $this->strKey = $strKey;
 
         $this->strTitle = $mixTitle;
@@ -31,10 +32,9 @@ class MJaxTableColumn{
         }
     }
     public function Render($objRow){
-
         $strRendered = '';
         $mixData = $objRow->GetData($this->strKey);
-        if(!is_null($this->objRenderObject)){
+        if(!is_null($this->strRenderFunction)){
             $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $objRow, $this);
         }else{
             if(!is_null($mixData)){
@@ -45,25 +45,38 @@ class MJaxTableColumn{
                     $strHtml = $mixData->Render(false);
                 }else{
                     //if is in edit mode
-                    //if($objRow->IsSelected()){
+                    if($objRow->IsSelected() && $this->IsSelected()){ //} && $this->objTable->EditMode){
                         $strHtml = $this->RenderIndvControl($objRow);
-                    //}else{
-                        $strHtml = $mixData;
-                    //}
+                    }else{
+                        $strHtml = '&nbsp;';
+                    }
                 }
 
 
             }else{
-                //if($objRow->IsSelected()){
-
+                if($objRow->IsSelected() && $this->IsSelected()){ //} && $this->objTable->EditMode){
                     $strHtml = $this->RenderIndvControl($objRow);
-                //}else{
+                }else{
                     $strHtml = '&nbsp;';
-                //}
+                }
 
             }
         }
-        $strRendered .= '<td>' . $strHtml . '</td>';
+        if(!$this->IsSelected()){
+            $strClassName = 'mjax-td';
+        }else{
+            $strClassName = 'mjax-td-selected';
+        }
+        $strRendered .=
+            sprintf(
+                '<td id="%s_%s" class="%s" data-key="%s">%s</td>',
+                $objRow->ControlId,
+                $this->strKey,
+                $strClassName,
+                $this->strKey,
+                $strHtml
+
+            );
         return $strRendered;
     }
     public function GetTitle(){
@@ -87,7 +100,15 @@ class MJaxTableColumn{
         $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
         return $strHtml;
     }
-
+    public function IsSelected(){
+        if(is_null($this->objTable->SelectedCol)){
+            return false;
+        }
+        if($this->objTable->SelectedCol->Key != $this->strKey){
+            return false;
+        }
+        return true;
+    }
 
 
     /////////////////////////

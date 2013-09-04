@@ -4,6 +4,7 @@
  */
 class MJaxTable extends MJaxControl{
     protected $rowSelected = null;
+    protected $colSelected = null;
 	protected $strFooterText = null;
     protected $arrColumnTitles = array();
 	protected $arrDataEntites = array();
@@ -30,6 +31,7 @@ class MJaxTable extends MJaxControl{
                     }
 
                 }
+                $arrColumnData['_entity'] = $mixEntity;
             }
             if(is_array($arrColumnData)){
                 foreach($arrColumnData as $strPropName => $strData){
@@ -80,7 +82,7 @@ class MJaxTable extends MJaxControl{
         if($strTitle instanceof MJaxTableColumn){
             $this->arrColumnTitles[$strKey] = $strTitle;
         }else{
-            $this->arrColumnTitles[$strKey] = new MJaxTableColumn($strKey, $strTitle, $objRenderObject, $strRenderFunction, $strEditControl);
+            $this->arrColumnTitles[$strKey] = new MJaxTableColumn($this, $strKey, $strTitle, $objRenderObject, $strRenderFunction, $strEditControl);
         }/*else{
             throw MLCMLCWrongTypeException(__FUNCTION__, 'mixColumn');
         }*/
@@ -141,7 +143,7 @@ class MJaxTable extends MJaxControl{
 		foreach($this->arrColumnTitles as $strTitle => $mixProp){
 			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $mixProp->GetTitle());
 		}
-		
+
 		$strRendered .= '</tr>';
 		$strRendered .= '</thead>';
 		$strRendered .= '<tbody>';
@@ -168,6 +170,7 @@ class MJaxTable extends MJaxControl{
         switch ($strName) {
             case "Rows": return $this->arrChildControls;
             case "SelectedRow": return $this->rowSelected;
+            case "SelectedCol": return $this->colSelected;
             default:
                 return parent::__get($strName);
 
@@ -182,6 +185,7 @@ class MJaxTable extends MJaxControl{
         switch ($strName) {
             case "Rows": return $this->arrChildControls = $mixValue; //I hope they know what they are doing
             case "SelectedRow": return $this->rowSelected = $mixValue;
+            case "SelectedCol": return $this->colSelected = $mixValue;
             default:
                 return parent::__set($strName, $mixValue);
         }
@@ -241,6 +245,14 @@ class MJaxTable extends MJaxControl{
         $this->rowSelected = $objRow;
         $objRow->lnkEdit->Text = 'Add';
         return $objRow;
+    }
+    public function ParsePostData(){
+        if(array_key_exists($this->strControlId. '_data', $_POST)){
+            $arrData = $_POST[$this->strControlId . '_data'];
+            $this->rowSelected = $this->arrChildControls[$arrData['row']];
+            $this->colSelected = $this->arrColumnTitles[$arrData['column_key']];
+            $this->blnModified = true;
+        }
     }
 }
 ?>
