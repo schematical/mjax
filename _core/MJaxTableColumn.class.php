@@ -45,16 +45,16 @@ class MJaxTableColumn{
                     $strHtml = $mixData->Render(false);
                 }else{
                     //if is in edit mode
-                    if($objRow->IsSelected() && $this->IsSelected()){ //} && $this->objTable->EditMode){
+                    if($objRow->IsSelected() && $this->IsSelected() && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
                         $strHtml = $this->RenderIndvControl($objRow);
                     }else{
-                        $strHtml = '&nbsp;';
+                        $strHtml = $mixData;
                     }
                 }
 
 
             }else{
-                if($objRow->IsSelected() && $this->IsSelected()){ //} && $this->objTable->EditMode){
+                if($objRow->IsSelected() && $this->IsSelected() && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
                     $strHtml = $this->RenderIndvControl($objRow);
                 }else{
                     $strHtml = '&nbsp;';
@@ -92,11 +92,12 @@ class MJaxTableColumn{
                 $objRow->arrEditControls[$this->strKey] = new $strClassName(
                     $objRow
                 );
+                $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
             }else{
                 //I think this is the remove button
             }
         }
-        $objRow->arrEditControls[$this->strKey]->SetValue($mixData);
+
         $strHtml = $objRow->arrEditControls[$this->strKey]->Render(false);
         return $strHtml;
     }

@@ -8,6 +8,11 @@ class MJaxTable extends MJaxControl{
 	protected $strFooterText = null;
     protected $arrColumnTitles = array();
 	protected $arrDataEntites = array();
+    protected $strEditMode = 'none';
+    public function __construct($objParentControl, $strControlId = null){
+        parent::__construct($objParentControl, $strControlId);
+        $this->AddCssClass('mjax-table');
+    }
 	public function GetColumns(){
 		return $this->arrColumnTitles;
 	}
@@ -32,6 +37,7 @@ class MJaxTable extends MJaxControl{
 
                 }
                 $arrColumnData['_entity'] = $mixEntity;
+
             }
             if(is_array($arrColumnData)){
                 foreach($arrColumnData as $strPropName => $strData){
@@ -103,6 +109,7 @@ class MJaxTable extends MJaxControl{
         }else{
             $strElementOverride = 'table';
         }
+        $this->arrAttr['data-edit-mode'] = $this->strEditMode;
         $strRendered = parent::Render();
         $strHeader = sprintf("<%s id='%s' name='%s' %s>\n", $strElementOverride, $this->strControlId, $this->strControlId, $this->GetAttrString());
         //If template is set render template
@@ -171,6 +178,7 @@ class MJaxTable extends MJaxControl{
             case "Rows": return $this->arrChildControls;
             case "SelectedRow": return $this->rowSelected;
             case "SelectedCol": return $this->colSelected;
+            case "EditMode": return $this->strEditMode;
             default:
                 return parent::__get($strName);
 
@@ -186,6 +194,7 @@ class MJaxTable extends MJaxControl{
             case "Rows": return $this->arrChildControls = $mixValue; //I hope they know what they are doing
             case "SelectedRow": return $this->rowSelected = $mixValue;
             case "SelectedCol": return $this->colSelected = $mixValue;
+            case "EditMode": return $this->strEditMode = $mixValue;
             default:
                 return parent::__set($strName, $mixValue);
         }

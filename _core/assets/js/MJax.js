@@ -27,7 +27,7 @@ var MJax = {
 
 
         //Table Stuff
-        $('body').on('click', '.mjax-td',function(objEvent){
+        $('body').on('click', '.mjax-table[data-edit-mode=inline] .mjax-td',function(objEvent){
             var jThis = $(this);
             var jTable = jThis.closest('table');
             var jRow = jThis.closest('tr');
@@ -243,20 +243,30 @@ var MJax = {
                  	try{
                  		strValue = jControl.html();
                  	}catch(e){
+                        console.log('HTML FAIL: ' + jControl.attr('id'));
                  		strValue = jControl.text();
                  	}
                  }
                 var strSelector = "#" +  jControl.attr('id');
 	        	var jEle = $(strSelector);
+
                 // $('body').off('change', strSelector);
+
 	        	if((jEle.length > 0)){
+                    console.log(strSelector + ' - ' + jEle[0].nodeName + ' - ' + typeof strValue);
+
+
 		        	if(
                             (jEle[0].nodeName == 'DIV') ||
                             (jEle[0].nodeName == 'A') ||
                             (jEle[0].nodeName == 'TABLE')
 		        	){
+                        /*jEle.empty();
+                        jEle.append(jControl.children());*/
 		            	jEle.html(strValue);
 			        }else{
+
+
 			           	jEle.val(strValue);
 		           	}
                     if(typeof jControl.attr('style') != 'undefined'){
@@ -268,7 +278,7 @@ var MJax = {
 	            		jEle.val(strValue);
 	            		$('body').append(jEle);
 	            	}else{
-	            		MLog("Missing DOM element '" + strSelector + "'");
+	            		//MLog("Missing DOM element '" + strSelector + "'");
 	            	}
 	            }
 	            MJax.EndTransition();

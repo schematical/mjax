@@ -61,4 +61,8 @@ abstract class MJaxTableDataMode{
 	const DATA_ENTITY = 'DATA_ENTITY';
 	const MJAX_ROW = 'MJAX_ROW';
 }
+abstract class MJaxTableEditMode{
+    const NONE = 'none';
+    const INLINE = 'inline';
+}
 ?>
