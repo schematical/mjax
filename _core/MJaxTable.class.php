@@ -148,10 +148,15 @@ class MJaxTable extends MJaxControl{
 		return $strRendered;
 	}
 	public function RenderDefault(){
+
 		$strRendered = '<thead>';
 		$strRendered .= '<tr>';
 		foreach($this->arrColumnTitles as $strTitle => $mixProp){
-			$strRendered .= sprintf('<th scope="col" class="rounded-company">%s</th>', $mixProp->GetTitle());
+			$strRendered .= sprintf(
+                '<th scope="col" class="rounded-company">%s%s</th>',
+                ($mixProp->IsSelected()?'<i class="icon-star"></i>':''),
+                $mixProp->GetTitle()
+            );
 		}
 
 		$strRendered .= '</tr>';
@@ -202,12 +207,7 @@ class MJaxTable extends MJaxControl{
                 return parent::__set($strName, $mixValue);
         }
     }
-    public function InitEditControls(){
-        foreach($this->Rows as $intIndex => $objRow){
-            $objRow->InitEditControls();
-        }
-        $this->AddColumn('edit','');
-    }
+
     public function InitRowControl($strKey, $strText, $ctlAction, $funAction, $strCssClasses = 'btn', $strCtlClassName = 'MJaxLinkButton'){
 
         if(!array_key_exists($strKey, $this->arrColumnTitles)){
@@ -234,14 +234,15 @@ class MJaxTable extends MJaxControl{
                     $ctlControl->AddCssClass($objColumn->ControlCssClasses);
                     $ctlControl->Text = $objColumn->ControlText;
                     $ctlControl->ActionParameter = $objRow->ActionParameter;
-
-                    $ctlControl->AddAction(
-                        new MJaxClickEvent(),
-                        new MJaxServerControlAction(
-                            $objColumn->ControlActionObject,
-                            $objColumn->ControlActionFunction
-                        )
-                    );
+                    if(!is_null($objColumn->ControlActionObject)){
+                        $ctlControl->AddAction(
+                            new MJaxClickEvent(),
+                            new MJaxServerControlAction(
+                                $objColumn->ControlActionObject,
+                                $objColumn->ControlActionFunction
+                            )
+                        );
+                    }
                     $objRow->AddData(
                         $ctlControl, $strKey
                     );
@@ -257,80 +258,116 @@ class MJaxTable extends MJaxControl{
         //$objRow->InitEditControls();
         $objRow->ActionParameter = -1;
         $this->rowSelected = $objRow;
-        //$objRow->lnkEdit->Text = 'Add';
+        $arrColKeys = array_keys($this->arrColumnTitles);
+        $i = 0;
+        while(
+            (is_null($this->colSelected)) &&
+            ($i < count($arrColKeys))
+        ){
+            if($this->arrColumnTitles[$arrColKeys[$i]]->Editable){
+                $this->colNewSelected = $this->arrColumnTitles[$arrColKeys[$i]];
+                //$this->colSelected = $this->colNewSelected;
+            }
+            $i += 1;
+        }
+
         return $objRow;
     }
     public function ParsePostData(){
+
         if(array_key_exists($this->strControlId. '_data', $_POST)){
 
 
             $arrData = $_POST[$this->strControlId . '_data'];
 
-            /*--------------Expiremental stuff--------------*/
-            /*
-            if(
-                (!is_null($this->rowSelected)) &&
-                (!is_null($this->colSelected)) &&
-                (
-                    ($this->rowSelected->ControlId != $this->arrChildControls[$arrData['row']]->ControlId) ||
-                    ($this->colSelected->Key != $this->arrColumnTitles[$arrData['column_key']]->Key)
-                ) &&
-                (method_exists($this->colSelected, 'UpdateValue'))
-            ){
-                $this->colSelected->UpdateValue();
-            }*/
-            /*-------End Expirmentnetal----------------*/
 
-            $this->rowNewSelected = $this->arrChildControls[$arrData['row']];
-            $this->colNewSelected = $this->arrColumnTitles[$arrData['column_key']];
+
+            if(array_key_exists($arrData['row'],$this->arrChildControls)){
+
+                $this->rowNewSelected = $this->arrChildControls[$arrData['row']];
+
+            }else{
+
+                $this->rowNewSelected = null;
+            }
+            if(array_key_exists($arrData['column_key'],$this->arrColumnTitles)){
+                $this->colNewSelected = $this->arrColumnTitles[$arrData['column_key']];
+            }else{
+                $this->colNewSelected = null;
+            }
             $this->blnModified = true;
+
         }
+
+
     }
 
     public function TriggerEvent($strEvent){
-
-
         if(
-            (!is_null($this->rowNewSelected)) &&
-            (!is_null($this->rowSelected)) &&
-            ($this->rowSelected->ControlId != $this->rowNewSelected->ControlId)
+            (!is_null($this->colSelected)) &&
+
+            (method_exists($this->colSelected, 'UpdateValue'))
         ){
-
-            $this->rowSelected->TriggerEvent('mjax-table-row-blur');
-            parent::TriggerEvent('mjax-table-row-blur');
-            if(
-                $this->colSelected->Editable
-            ){
-                $this->rowSelected->TriggerEvent('mjax-table-edit-save');
-                parent::TriggerEvent('mjax-table-edit-save');
-                if(
-                    (method_exists($this->colSelected, 'UpdateValue'))
-                ){
-                    $this->colSelected->UpdateValue();
-                }
-
-            }
-            $this->rowSelected = $this->rowNewSelected;
-            $this->rowNewSelected = null;
-            $this->rowSelected->TriggerEvent('mjax-table-row-focus');
-            parent::TriggerEvent('mjax-table-row-focus');
+                $this->colSelected->UpdateValue();
         }
 
         if(
-            (!is_null($this->colSelected)) &&
-            (!is_null($this->colNewSelected)) &&
+            (is_null($this->rowNewSelected) != is_null($this->rowSelected)) ||
+            (
+                (!is_null($this->rowNewSelected)) &&
+                (!is_null($this->rowSelected)) &&
+                ($this->rowSelected->ControlId != $this->rowNewSelected->ControlId)
+            )
+        ){
+            if(!is_null($this->rowSelected)){
+                if(
+                    (!is_null($this->colSelected)) &&
+                    $this->colSelected->Editable
+                ){
+                    $this->rowSelected->TriggerEvent('mjax-table-edit-save');
+                    parent::TriggerEvent('mjax-table-edit-save');
+                }
+                $this->rowSelected->TriggerEvent('mjax-table-row-blur');
+                parent::TriggerEvent('mjax-table-row-blur');
+            }
+
+            $this->rowSelected = $this->rowNewSelected;
+            $this->rowNewSelected = null;
+            if(!is_null($this->rowSelected)){
+                $this->rowSelected->TriggerEvent('mjax-table-row-focus');
+                parent::TriggerEvent('mjax-table-row-focus');
+            }
+        }
+
+        if(
+            (is_null($this->colSelected)  != is_null($this->colNewSelected)) ||
             ($this->colSelected->Key != $this->colNewSelected->Key)
         ){
-            $this->rowSelected->TriggerEvent('mjax-table-col-blur');
+
+            $this->objForm->AddJSCall(
+                    '$(function(){  $(".mjax-td-selected input[type!=hidden]").focus(); });'
+                    //'$(document).on("mjax-page-load",function(){ alert("x"); $(".mjax-td-selected input[type!=hidden]").focus(); });'
+            );
+            if(!is_null($this->rowSelected)){
+                $this->rowSelected->TriggerEvent('mjax-table-col-blur');
+            }
             parent::TriggerEvent('mjax-table-col-blur');
+
+
             $this->colSelected = $this->colNewSelected;
             $this->colNewSelected = null;
-            $this->rowSelected->TriggerEvent('mjax-table-col-focus');
-            parent::TriggerEvent('mjax-table-col-focus');
+            if(!is_null($this->rowSelected)){
+                $this->rowSelected->TriggerEvent('mjax-table-col-focus');
+            }
+
             if(
-            $this->colSelected->Editable
+                (!is_null($this->colSelected)) &&
+                ($this->colSelected->Editable)
             ){
-                $this->rowSelected->TriggerEvent('mjax-table-edit-init');
+                parent::TriggerEvent('mjax-table-col-focus');
+                if(!is_null($this->rowSelected)){
+                    $this->rowSelected->TriggerEvent('mjax-table-edit-init');
+                }
                 parent::TriggerEvent('mjax-table-edit-init');
             }
         }

@@ -125,7 +125,7 @@ class MJaxFormBase{
 				$objClass->strAssetMode = MJaxAssetMode::WWW;
 			//}
 		}
-        if (key_exists(MJaxFormPostData::MJaxForm__FormState, $_POST)){
+        if (array_key_exists(MJaxFormPostData::MJaxForm__FormState, $_POST)){
                 //Tell the object and the application what the call type is
                 
 				$strPostDataState = $_POST[MJaxFormPostData::MJaxForm__FormState];
@@ -137,7 +137,7 @@ class MJaxFormBase{
                 $objClass->ParsePostData();
 
                 $objClass->strCallType = MJaxCallType::Ajax;
-               // QApplication::$RequestMode = QRequestMode::Ajax;
+
 
         }elseif(
         	(array_key_exists(MJaxFormPostData::ACTION, $_POST)) &&
@@ -570,7 +570,9 @@ class MJaxFormBase{
         }
     }
     public function ParsePostData(){
+
         foreach($this->arrControls as $objControl){
+
             $objControl->ParsePostData();
         }
     }

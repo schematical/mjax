@@ -70,10 +70,10 @@ class MJaxTableColumn{
     public function Render($objRow){
         $strRendered = '';
         $strHtml = $this->RenderInner($objRow);
-        if(!$this->IsSelected()){
-            $strClassName = 'mjax-td';
-        }else{
+        if($this->IsSelected() && $objRow->IsSelected()){
             $strClassName = 'mjax-td-selected';
+        }else{
+            $strClassName = 'mjax-td';
         }
         $strRendered .=
             sprintf(
@@ -90,6 +90,16 @@ class MJaxTableColumn{
     }
     public function GetTitle(){
         return $this->strTitle;
+    }
+    public function UpdateValue(){
+        $objRow = $this->objTable->SelectedRow;
+        if(array_key_exists($this->strKey, $objRow->arrEditControls)){
+            $mixValue = $objRow->arrEditControls[$this->strKey]->GetValue();
+            $objRow->SetData(
+                $this->strKey,
+                $mixValue
+            );
+        }
     }
     public function RenderIndvControl($objRow){
         $mixData = $objRow->GetData($this->strKey);

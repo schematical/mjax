@@ -29,8 +29,7 @@ var MJax = {
         //Table Stuff
         $('body').on('click', '.mjax-table[data-edit-mode=inline] .mjax-td',function(objEvent){
             $(this).closest('.mjax-table').trigger('mjax-table-select');
-        //});
-        //$('body').on('mjax-table-select', '.mjax-table', function(objEvent){
+
             var jThis = $(this);
             var jTable = jThis.closest('table');
             var jRow = jThis.closest('tr');
@@ -48,14 +47,49 @@ var MJax = {
             );
         });
         $('body').on('keydown', '.mjax-td-selected input',function(objEvent){
+            var jThis = $(this);
+            var jTable = jThis.closest('.mjax-table');
+            console.log(objEvent);
             console.log(objEvent.keyCode);
+            jNext = null;
             switch(objEvent.keyCode){
                 case(9)://tab
-                    var jNext = $(this).closest('td').nextAll('td[data-editable=true]');
-                    if(jNext.length >= 1){
-                        $(jNext[0]).trigger('click');
+                    if(!objEvent.shiftKey){
+                        var jNext = $(this).closest('td').nextAll('td[data-editable=true]');
+                        if(jNext.length == 0){
+                            //Jump to next row
+                            var jNextRow = $(this).closest('tr').next();
+                            jNext = jNextRow.find('td[data-editable=true]');
+                        }
+                    }else{
+                        var jNext = $(this).closest('td').prevAll('td[data-editable=true]');
+                        if(jNext.length == 0){
+                            var jNextRow = $(this).closest('tr').prev();
+                            jNext = jNextRow.find('td[data-editable=true]').last();
+                        }
                     }
-                    objEvent.preventDefault();
+
+            }
+
+            if(jNext != null){
+                if(jNext.length >= 1){
+                    $(jNext[0]).trigger('click');
+                }else{
+                    var objData = {};
+                    //Figure out a way to trigger the blur event
+                    objData[jTable.attr('id')+ '_data'] = {
+                        'row':-1,
+                        'column':-1,
+                        'column_key':-1
+                    };
+                    MJax.TriggerControlEvent(
+                        objEvent,
+                        '#'+ jTable.attr('id'),
+                        'mjax-table-select',
+                        objData
+                    );
+                }
+                objEvent.preventDefault();
             }
 
         });

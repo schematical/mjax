@@ -68,20 +68,19 @@ class MJaxTableRow extends MJaxControl{
         }
 	 }
 
-    public function lnkEdit_click(){
-
-
-    }
     public function UpdateEntity(BaseEntity $objEntity){
         foreach($this->arrData as $strKey => $mixValue){
-            if(!is_object($mixValue)){
-                try{
-                    $objEntity->__set($strKey, $mixValue);
-                }catch(MLCMissingPropertyException $e){
-                    //do nothing
+            try{
 
-                }
+                $objEntity->__set($strKey, $mixValue);
+            }catch(MLCMissingPropertyException $e){
+                //do nothing
+                //error_log($e->getMessage());
+            }catch(MLCWrongTypeException $e){
+                //do nothing
+                //error_log($e->getMessage());
             }
+
         }
 
         $objEntity->Save();
@@ -93,7 +92,7 @@ class MJaxTableRow extends MJaxControl{
         foreach($this->arrData as $strKey => $mixValue){
             if(!is_object($mixValue)){
                 try{
-                    error_log($strKey . ' = ' . $objEntity->__get($strKey));
+
                     $this->arrData[$strKey] = $objEntity->__get($strKey);
                 }catch(MLCMissingPropertyException $e){
                     //do nothing

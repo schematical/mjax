@@ -201,6 +201,23 @@ class MJaxTableEditSaveEvent extends MJaxEventBase{
 class MJaxTableSelectEvent extends MJaxEventBase{
     protected $strEventName = 'mjax-table-select';
 }
+class MJaxTableRowBlurEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-row-blur';
+}
+class MJaxTableRowFocusEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-row-focus';
+}
+class MJaxTableColBlurEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-col-blur';
+}
+class MJaxTableColFocusEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-table-col-focus';
+}
 
-
+class MJaxSuccessEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-success';
+}
+class MJaxErrorEvent extends MJaxEventBase{
+    protected $strEventName = 'mjax-error';
+}
 ?>
