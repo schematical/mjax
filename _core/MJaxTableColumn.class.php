@@ -5,6 +5,7 @@ class MJaxTableColumn{
     protected $strTitle = null;
     protected $objRenderObject = null;
     protected $strRenderFunction = null;
+    protected $blnEditable = false;
 
     protected $strEditControlClass = null;
     protected $strEditCtlInitMethod = null;
@@ -15,13 +16,14 @@ class MJaxTableColumn{
     protected $funControlAction = null;
     protected $strControlCssClasses = 'btn';
 
-    public function __construct($objTable, $strKey, $mixTitle, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
+    public function __construct(MJaxTable $objTable, $strKey, $mixTitle){//, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
         $this->objTable = $objTable;
         $this->strKey = $strKey;
 
         $this->strTitle = $mixTitle;
 
-        $this->objRenderObject = $objRenderObject;
+
+       /* $this->objRenderObject = $objRenderObject;
         $this->strRenderFunction = $strFunction;
         if(method_exists($this->objRenderObject, $strEditControlClass)){
             $this->strEditCtlInitMethod = $strEditControlClass;
@@ -29,11 +31,12 @@ class MJaxTableColumn{
             $this->strEditControlClass = $strEditControlClass;
         }else{
             throw new Exception("Cannot figure out what control class or render method was passed in for \$strControlClass parameter");
-        }
+        }*/
     }
-    public function Render($objRow){
+    public function RenderInner($objRow){
         $strRendered = '';
         $mixData = $objRow->GetData($this->strKey);
+
         if(!is_null($this->strRenderFunction)){
             $strHtml = $this->objRenderObject->{$this->strRenderFunction}($mixData, $objRow, $this);
         }else{
@@ -45,7 +48,7 @@ class MJaxTableColumn{
                     $strHtml = $mixData->Render(false);
                 }else{
                     //if is in edit mode
-                    if($objRow->IsSelected() && $this->IsSelected() && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
+                    if($objRow->IsSelected() && $this->IsSelected() && $this->blnEditable && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
                         $strHtml = $this->RenderIndvControl($objRow);
                     }else{
                         $strHtml = $mixData;
@@ -54,7 +57,7 @@ class MJaxTableColumn{
 
 
             }else{
-                if($objRow->IsSelected() && $this->IsSelected() && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
+                if($objRow->IsSelected() && $this->IsSelected() && $this->blnEditable && $this->objTable->EditMode == MJaxTableEditMode::INLINE){
                     $strHtml = $this->RenderIndvControl($objRow);
                 }else{
                     $strHtml = '&nbsp;';
@@ -62,6 +65,11 @@ class MJaxTableColumn{
 
             }
         }
+        return $strHtml;
+    }
+    public function Render($objRow){
+        $strRendered = '';
+        $strHtml = $this->RenderInner($objRow);
         if(!$this->IsSelected()){
             $strClassName = 'mjax-td';
         }else{
@@ -69,11 +77,12 @@ class MJaxTableColumn{
         }
         $strRendered .=
             sprintf(
-                '<td id="%s_%s" class="%s" data-key="%s">%s</td>',
+                '<td id="%s_%s" class="%s" data-key="%s" data-editable="%s">%s</td>',
                 $objRow->ControlId,
                 $this->strKey,
                 $strClassName,
                 $this->strKey,
+                ($this->blnEditable?'true':'false'),
                 $strHtml
 
             );
@@ -143,6 +152,8 @@ class MJaxTableColumn{
                 return $this->funControlAction;
             case "ControlCssClasses":
                 return $this->strControlCssClasses;
+            case "Editable":
+                return $this->blnEditable;
             default:
                 //parent::__get($strName);
                 throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);
@@ -180,6 +191,8 @@ class MJaxTableColumn{
                 return $this->funControlAction = $mixValue;
             case "ControlCssClasses":
                 return $this->strControlCssClasses = $mixValue;
+            case "Editable":
+                return $this->blnEditable = $mixValue;
             default:
                 //parent::__set($strName, $mixValue);
                 throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);

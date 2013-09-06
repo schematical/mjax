@@ -6,7 +6,7 @@ var MJax = {
     arrControls:new Array(),
     blnFadeOnLoad:false,
     objTransitions:new Object(),
-    objExtensions:new Object(), 
+    objExtensions:new Object(),
     Init:function(){        
         var arrLocationParts = document.location.toString().split("/");
         this.strCurrPageUrl = MJax.GetDocRealLocation();
@@ -28,6 +28,9 @@ var MJax = {
 
         //Table Stuff
         $('body').on('click', '.mjax-table[data-edit-mode=inline] .mjax-td',function(objEvent){
+            $(this).closest('.mjax-table').trigger('mjax-table-select');
+        //});
+        //$('body').on('mjax-table-select', '.mjax-table', function(objEvent){
             var jThis = $(this);
             var jTable = jThis.closest('table');
             var jRow = jThis.closest('tr');
@@ -43,6 +46,18 @@ var MJax = {
                 'mjax-table-select',
                 objData
             );
+        });
+        $('body').on('keydown', '.mjax-td-selected input',function(objEvent){
+            console.log(objEvent.keyCode);
+            switch(objEvent.keyCode){
+                case(9)://tab
+                    var jNext = $(this).closest('td').nextAll('td[data-editable=true]');
+                    if(jNext.length >= 1){
+                        $(jNext[0]).trigger('click');
+                    }
+                    objEvent.preventDefault();
+            }
+
         });
 
         //ControlSpecific

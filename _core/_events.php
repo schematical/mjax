@@ -202,4 +202,5 @@ class MJaxTableSelectEvent extends MJaxEventBase{
     protected $strEventName = 'mjax-table-select';
 }
 
+
 ?>

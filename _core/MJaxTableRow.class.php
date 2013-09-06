@@ -16,11 +16,16 @@ class MJaxTableRow extends MJaxControl{
      }
 	 public function AddData($mixData, $strPropName = null){
 	 	if(!is_null($strPropName)){
-			$this->arrData[$strPropName] = $mixData;	
+			$this->arrData[$strPropName] = $mixData;
 		}else{
 			$this->arrData[] = $mixData;
-		}	
+		}
 	 }
+     public function SetData($strPropName, $mixData){
+
+        $this->arrData[$strPropName] = $mixData;
+
+    }
 	 public function GetData($strPropName = null){
          if(is_null($strPropName)){
              return $this->arrData;
@@ -62,50 +67,8 @@ class MJaxTableRow extends MJaxControl{
             return $strRendered;
         }
 	 }
-    public function InitEditControls(){
-        //$objRow->RemoveAllActions('click');
-        $this->lnkEdit = new MJaxLinkButton($this);
-        $this->lnkEdit->AddCssClass('btn');
-        $this->lnkEdit->Text = 'Edit';
-        $this->lnkEdit->ActionParameter = $this->ActionParameter;
 
-        $this->lnkEdit->AddAction($this, 'lnkEdit_click');
-        $this->AddData(
-            $this->lnkEdit, 'edit'
-        );
-    }
     public function lnkEdit_click(){
-        //Decided weither it is an edit init or an edit save event
-        if(!$this->IsSelected()){
-            $this->objParentControl->SelectedRow = $this;
-            $this->objForm->TriggerControlEvent(
-                $this->objParentControl->ControlId,
-                'mjax-table-edit-init'
-            );
-
-            $this->lnkEdit->Text = 'Save';
-            $this->blnModified = true;
-        }else{
-            foreach($this->arrEditControls as $strKey => $ctlEdit){
-                if(!is_object($this->arrData[$strKey])){
-                    $this->arrData[$strKey] = $ctlEdit->GetValue();
-                }
-            }
-            $this->objForm->TriggerControlEvent(
-                $this->objParentControl->ControlId,
-                'mjax-table-edit-save'
-            );
-            $this->objParentControl->SelectedRow = null;
-            //Remove all edit controls
-            /*foreach($this->arrEditControls as $strKey => $ctlEdit){
-                $ctlEdit->Remove();
-                unset($this->arrEditControls[$strKey]);
-            }*/
-
-            $this->lnkEdit->Text = 'Edit';
-            $this->blnModified = true;
-        }
-        //trigger event accordingly
 
 
     }
