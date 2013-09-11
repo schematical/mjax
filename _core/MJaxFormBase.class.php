@@ -376,7 +376,7 @@ class MJaxFormBase{
 		}
 		$strControlFull .= sprintf(
 			"<control id='%s' transition='%s'>%s</control>",
-			 MJaxFormPostData::MJaxForm__FormState,
+			 self::XmlEscape(MJaxFormPostData::MJaxForm__FormState),
 			 MJaxTransition::SET_VALUE,
 			 MJaxForm::Serialize($this)
 		);
@@ -762,6 +762,9 @@ class MJaxFormBase{
     }
     public function ReplaceWith($mixControl, $mixHtml){
         $this->InjectControl($mixControl, $mixHtml, 'replaceWith');
+    }
+    public function Detach($mixControl){
+        $this->InjectControl($mixControl, '', 'detach');
     }
     protected function InjectControl($mixControl, $mixHtml, $strMethod){
         if(is_string($mixControl)){
