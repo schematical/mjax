@@ -189,6 +189,22 @@ class MJaxTimeoutEvent extends MJaxEventBase{
     }
 }
 
+class MJaxBeforeUnloadEvent extends MJaxEventBase{
+    protected $strEventName = 'beforeunload';
+    public function Render(){
+        $strRendered = sprintf(
+            "$(window).bind('%s',
+                %s
+            );",
+            $this->strEventName,
+            $this->objAction->Render()
+
+        );
+        $this->blnRendered = true;
+        return $strRendered;
+    }
+}
+
 /*
  * New table edit event 8/21/13
  */

@@ -92,6 +92,7 @@ class MJaxJavascriptAction extends MJaxBaseAction{
         $strRendered .= '';
         return $strRendered;
     }
+    public function Exicute(){}
 }
 class MJaxPluginAction extends MJaxJavascriptAction{
     
