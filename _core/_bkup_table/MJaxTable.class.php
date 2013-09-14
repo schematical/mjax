@@ -27,10 +27,7 @@ class MJaxTable extends MJaxControl{
 		if(!is_null($arrColumnData)){
             if(
                 (is_object($arrColumnData)) &&
-                (
-                    ($arrColumnData instanceof BaseEntity) ||
-                    ($arrColumnData instanceof MLCBaseEntity)
-                )
+                ($arrColumnData instanceof BaseEntity)
             ){
                 $mixEntity = $arrColumnData;
                 $arrColumnData = array();
