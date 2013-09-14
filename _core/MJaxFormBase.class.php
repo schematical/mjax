@@ -789,6 +789,9 @@ class MJaxFormBase{
         }else{
             throw new Exception("Invalid Control/Element selector passed in");
         }
+        $strHtml = str_replace("\n","", $strHtml);
+        $strHtml = str_replace("\r","", $strHtml);
+        $strHtml = addslashes(trim($strHtml));
         $this->AddJSCall(
             sprintf(
                 '$("%s").%s("%s")',

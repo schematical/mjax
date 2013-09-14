@@ -60,7 +60,10 @@ class MJaxTable extends MJaxControl{
 
 		//$this->strDataMode = MJaxTableDataMode::DATA_ENTITY;
 		if(!is_array($arrDataEntites)){
-            if($arrDataEntites instanceof BaseEntityCollection){
+            if(
+                ($arrDataEntites instanceof BaseEntityCollection) ||
+                ($arrDataEntites instanceof MLCBaseEntityCollection)
+            ){
 			    $this->arrDataEntites = $arrDataEntites->GetCollection();
             }else{
                 $this->arrDataEntites = array($arrDataEntites);

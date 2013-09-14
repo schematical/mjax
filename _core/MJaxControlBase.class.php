@@ -370,31 +370,31 @@ abstract class MJaxControlBase{
 	}
     public function After($mixHtml){
         $this->objForm->After(
-            $this->strControlId,
+            '#' . $this->strControlId,
             $mixHtml
         );
     }
     public function Before($mixHtml){
         $this->objForm->Before(
-            $this->strControlId,
+            '#' . $this->strControlId,
             $mixHtml
         );
     }
     public function Append($mixHtml){
         $this->objForm->Append(
-            $this->strControlId,
+            '#' . $this->strControlId,
             $mixHtml
         );
     }
     public function Prepend($mixHtml){
         $this->objForm->Prepend(
-            $this->strControlId,
+            '#' . $this->strControlId,
             $mixHtml
         );
     }
     public function ReplaceWith($mixControl, $mixHtml){
         $this->objForm->ReplaceWith(
-            $this->strControlId,
+            '#' . $this->strControlId,
             $mixHtml
         );
     }

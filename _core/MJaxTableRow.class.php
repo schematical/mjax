@@ -68,7 +68,7 @@ class MJaxTableRow extends MJaxControl{
         }
 	 }
 
-    public function UpdateEntity(BaseEntity $objEntity){
+    public function UpdateEntity(MLCBaseEntity $objEntity){
         foreach($this->arrData as $strKey => $mixValue){
             try{
 
@@ -88,7 +88,7 @@ class MJaxTableRow extends MJaxControl{
             $this->arrData[$objEntity->getPKey()] = $objEntity->getId();
         }
     }
-    public function UpdateRow(BaseEntity $objEntity){
+    public function UpdateRow(MLCBaseEntity $objEntity){
         foreach($this->arrData as $strKey => $mixValue){
             if(!is_object($mixValue)){
                 try{
