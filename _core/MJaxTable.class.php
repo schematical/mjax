@@ -3,6 +3,7 @@
  * This is a basic dif for use with the MJax Framework
  */
 class MJaxTable extends MJaxControl{
+    protected $objCollection = null;
     protected $rowSelected = null;
     protected $colSelected = null;
     /*--------Expiremental-----------------*/
@@ -21,6 +22,9 @@ class MJaxTable extends MJaxControl{
 	public function GetColumns(){
 		return $this->arrColumnTitles;
 	}
+    public function SetCollection(MLCBaseEntityCollection &$objColl){
+        $this->objCollection = $objColl;
+    }
 	public function AddRow($arrColumnData = null){
 		$objRow = new MJaxTableRow($this);
 		//TODO: Possibly allow user to set default row styling
@@ -161,7 +165,7 @@ class MJaxTable extends MJaxControl{
 			$strRendered .= sprintf(
                 '<th scope="col" class="rounded-company">%s%s</th>',
                 ($mixProp->IsSelected()?'<i class="icon-star"></i>':''),
-                $mixProp->GetTitle()
+                $mixProp->RenderHeader()
             );
 		}
 
@@ -379,6 +383,32 @@ class MJaxTable extends MJaxControl{
         }
 
 
+    }
+    public function lnkOrderBy_click($strFomrId, $strControlId, $arrFieldData){
+        $this->objCollection->OrderBy(
+            $arrFieldData['field'],
+            $arrFieldData['direction']
+        );
+        $this->UpdateFromCollection();
+    }
+    public function lnkHide_click($strFomrId, $strControlId, $strKey){
+        $this->RemoveColumn($strKey);
+        $this->blnModified = true;
+    }
+    public function UpdateFromCollection(){
+        $this->objCollection->ExecuteQuery();
+        $this->RemoveAllChildControls();
+        $this->SetDataEntites($this->objCollection);
+    }
+    public function SetForm($objForm){
+        parent::SetForm($objForm);
+        if(!is_null($objForm)){
+            foreach($this->arrColumnTitles as $objColumn){
+                if($objColumn->RenderObject instanceof MJaxForm){
+                    $objColumn->RenderObject = $this->objForm;
+                }
+            }
+        }
     }
 }
 ?>

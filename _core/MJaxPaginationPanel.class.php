@@ -11,7 +11,7 @@ class MJaxPaginationPanel extends MJaxPanel{
         $this->objCollection = $objCollection;
         for( $i = 0; $i < $objCollection->QueryPaginationLength(); $i++){
             $lnkPage  = new MJaxLinkButton($this);
-            $lnkPage->Text = $i;
+            $lnkPage->Text = $i + 1;
             $lnkPage->ActionParameter = $i;
             $lnkPage->AddAction(
                 $this,
@@ -25,7 +25,7 @@ class MJaxPaginationPanel extends MJaxPanel{
             $intPage * $this->objCollection->LimitCount
         );
         $this->strActionParameter = $this->objCollection;
-        $this->Trigger('mjax-pagination-panel-page-change-event');
+        $this->TriggerEvent('mjax-pagination-panel-page-change-event');
     }
     
 }

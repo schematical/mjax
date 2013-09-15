@@ -109,7 +109,7 @@ abstract class MJaxControlBase{
 			
 		}
         $objEvent->Init($this, $objAction);
-        if(!key_exists($objEvent->EventName, $this->arrEvents)){
+        if(!array_key_exists($objEvent->EventName, $this->arrEvents)){
             $this->arrEvents[$objEvent->EventName] = array();
         }
         $this->arrEvents[$objEvent->EventName][] = $objEvent;

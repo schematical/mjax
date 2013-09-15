@@ -1,5 +1,6 @@
 <?php
 class MJaxTableColumn{
+
     protected $objTable = null;
     protected $strKey = null;
     protected $strTitle = null;
@@ -15,6 +16,11 @@ class MJaxTableColumn{
     protected $ctlControlAction = null;
     protected $funControlAction = null;
     protected $strControlCssClasses = 'btn';
+    protected $strOrderByField = null;
+
+    protected $blnHidden = false;
+
+    protected $arrHeaderCtls = array();
 
     public function __construct(MJaxTable $objTable, $strKey, $mixTitle){//, $objRenderObject = null, $strFunction = null, $strEditControlClass = 'MJaxTextBox'){
         $this->objTable = $objTable;
@@ -23,16 +29,9 @@ class MJaxTableColumn{
         $this->strTitle = $mixTitle;
 
 
-       /* $this->objRenderObject = $objRenderObject;
-        $this->strRenderFunction = $strFunction;
-        if(method_exists($this->objRenderObject, $strEditControlClass)){
-            $this->strEditCtlInitMethod = $strEditControlClass;
-        }elseif(class_exists($strEditControlClass)){
-            $this->strEditControlClass = $strEditControlClass;
-        }else{
-            throw new Exception("Cannot figure out what control class or render method was passed in for \$strControlClass parameter");
-        }*/
+        $this->InitHeaderCtls();
     }
+
     public function RenderInner($objRow){
         $strRendered = '';
         $mixData = $objRow->GetData($this->strKey);
@@ -129,6 +128,66 @@ class MJaxTableColumn{
         }
         return true;
     }
+    public function InitHeaderCtls(){
+       /* $this->arrHeaderCtls['hide'] = new MJaxLinkButton($this->objTable->Form);
+        $this->arrHeaderCtls['hide']->Text = 'Hide this column';
+        $this->arrHeaderCtls['hide']->ActionParameter = $this->strKey;
+
+
+        $this->arrHeaderCtls['hide']->AddAction(
+            $this->objTable,
+            'lnkHide_click'
+        );*/
+    }
+    public function SetOrderByField($strField){
+        $this->strOrderByField = $strField;
+        $this->arrHeaderCtls['order_by_asc'] = new MJaxLinkButton($this->objTable->Form);
+        $this->arrHeaderCtls['order_by_asc']->Text = 'OOrder By Ascending';
+        $this->arrHeaderCtls['order_by_asc']->ActionParameter = array(
+           'field'=>$this->strOrderByField,
+           'direction'=>'ASC'
+        );
+        $this->arrHeaderCtls['order_by_asc']->AddAction(
+            $this->objTable,
+            'lnkOrderBy_click'
+        );
+        $this->arrHeaderCtls['order_by_desc'] = new MJaxLinkButton($this->objTable->Form);
+        $this->arrHeaderCtls['order_by_desc']->Text = 'OOrder By Desending';
+        $this->arrHeaderCtls['order_by_desc']->ActionParameter = array(
+            'field'=>$this->strOrderByField,
+            'direction'=>'DESC'
+        );
+        $this->arrHeaderCtls['order_by_desc']->AddAction(
+            $this->objTable,
+            'lnkOrderBy_click'
+        );
+    }
+    public function RenderHeader(){
+        if(count($this->arrHeaderCtls) == 0){
+            return $this->GetTitle();
+        }
+        $strHeaderCtlHtml = '';
+        foreach($this->arrHeaderCtls as $lnkCtl){
+            $strHeaderCtlHtml .= sprintf(
+                '<li>%s</li>',
+                $lnkCtl->Render(false)
+            );
+        }
+        $strHtml = sprintf(
+            '<div class="btn-group">
+                  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    %s
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    %s
+                  </ul>
+            </div>',
+            $this->GetTitle(),
+            $strHeaderCtlHtml
+        );
+        return $strHtml;
+    }
 
 
     /////////////////////////
@@ -164,6 +223,8 @@ class MJaxTableColumn{
                 return $this->strControlCssClasses;
             case "Editable":
                 return $this->blnEditable;
+            case "OrderByField":
+                return $this->strOrderByField;
             default:
                 //parent::__get($strName);
                 throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);
@@ -203,9 +264,12 @@ class MJaxTableColumn{
                 return $this->strControlCssClasses = $mixValue;
             case "Editable":
                 return $this->blnEditable = $mixValue;
+            /*case "OrderByField":
+                return $this->strOrderByField = $mixValue;*/
             default:
                 //parent::__set($strName, $mixValue);
                 throw new Exception("Not porperty exists with name '" . $strName . "' in class " . __CLASS__);
         }
     }
+
 }

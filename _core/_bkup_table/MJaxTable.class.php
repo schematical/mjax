@@ -158,7 +158,7 @@ class MJaxTable extends MJaxControl{
 			$strRendered .= sprintf(
                 '<th scope="col" class="rounded-company">%s%s</th>',
                 ($mixProp->IsSelected()?'<i class="icon-star"></i>':''),
-                $mixProp->GetTitle()
+                $mixProp->RenderHeader()
             );
 		}
 
