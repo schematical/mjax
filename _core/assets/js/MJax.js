@@ -313,9 +313,19 @@ var MJax = {
                         /*jEle.empty();
                         jEle.append(jControl.children());*/
 		            	jEle.html(strValue);
-			        }else{
-
-
+			        }else if(
+                        (jEle[0].nodeName == 'INPUT') &&
+                        (
+                            (jEle.attr('type') == 'checkbox')
+                        )
+                    ){
+                        var strChecked = jControl.attr('checked');
+                        if(typeof(strChecked) == 'undefined'){
+                            strChecked = false;
+                        }
+                        jEle.attr('checked', strChecked);
+                        //$.uniform.update(jEle);
+                    }else{
 			           	jEle.val(strValue);
 		           	}
                     if(typeof jControl.attr('style') != 'undefined'){

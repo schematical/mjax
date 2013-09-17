@@ -125,6 +125,7 @@ class MJaxListBox extends MJaxControl{
                 $objListItem->Selected = false;
             }
         }
+        $this->blnModified = true;
         return true;
     }
     public function GetValue(){
