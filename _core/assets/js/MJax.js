@@ -238,6 +238,7 @@ var MJax = {
         if(blnFade == undefined){
             blnFade = false;
         }
+        $(document).trigger('mjax-load-start');
         MJax.blnFadeOnLoad = blnFade;
         this.strCurrPageUrl = strUrl;
         if(objData == undefined){
@@ -325,6 +326,12 @@ var MJax = {
                         }
                         jEle.attr('checked', strChecked);
                         //$.uniform.update(jEle);
+                    } else if(jEle[0].nodeName == 'SELECT'){
+                        jEle.children().remove();
+
+                        var jOptions = $(strValue);
+                        jEle.append(jOptions);
+
                     }else{
 			           	jEle.val(strValue);
 		           	}
@@ -358,7 +365,8 @@ var MJax = {
 
     },
     LoadMainPageLoadFail:function(jXhr, strTextStaus, strErrorThrown){
-    	console.log(strErrorThrown);
+    	$(document).trigger('mjax-load-error');
+        console.log(strErrorThrown);
     	if(typeof(MJax.Alert) != 'undefined'){
     		MJax.Alert(
     			
