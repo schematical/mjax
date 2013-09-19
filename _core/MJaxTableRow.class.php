@@ -45,13 +45,10 @@ class MJaxTableRow extends MJaxControl{
         }
         $strRendered = parent::Render();
         $strHeader = sprintf("<%s id='%s' name='%s' %s>\n", $strElementOverride, $this->strControlId, $this->strControlId, $this->GetAttrString());
+
 		foreach($this->objParentControl->GetColumns() as $strKey => $objColumn){
 
-
-
                 $strRendered .= $objColumn->Render($this);
-
-
 
 		}
 		$strFooter = sprintf("</%s>", $strElementOverride);

@@ -766,6 +766,9 @@ class MJaxFormBase{
     public function Detach($mixControl){
         $this->InjectControl($mixControl, '', 'detach');
     }
+    public function Focus($mixControl){
+        $this->InjectControl($mixControl, null, 'focus');
+    }
     protected function InjectControl($mixControl, $mixHtml, $strMethod){
         if(is_string($mixControl)){
             $strSelector = $mixControl;
@@ -778,8 +781,9 @@ class MJaxFormBase{
             throw new Exception("Invalid Control/Element selector passed in");
         }
 
-
-        if(is_string($mixHtml)){
+        if(is_null($mixHtml)){
+            $strHtml = null;
+        }elseif(is_string($mixHtml)){
             $strHtml = $mixHtml;
         }elseif(
             (is_object($mixHtml)) &&
@@ -789,12 +793,15 @@ class MJaxFormBase{
         }else{
             throw new Exception("Invalid Control/Element selector passed in");
         }
-        $strHtml = str_replace("\n","", $strHtml);
-        $strHtml = str_replace("\r","", $strHtml);
-        $strHtml = addslashes(trim($strHtml));
+        if(!is_null($strHtml)){
+            $strHtml = str_replace("\n","", $strHtml);
+            $strHtml = str_replace("\r","", $strHtml);
+            $strHtml = addslashes(trim($strHtml));
+            $strHtml = '"' . $strHtml . '"';
+        }
         $this->AddJSCall(
             sprintf(
-                '$("%s").%s("%s")',
+                '$("%s").%s(%s)',
                 $strSelector,
                 $strMethod,
                 $strHtml
