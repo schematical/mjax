@@ -78,10 +78,9 @@ class MJaxTable extends MJaxControl{
 		}else{
 			$this->arrDataEntites = $arrDataEntites;
 		}
-        //_dv($arrDataEntites);
-		$arrColumnData = array();
-		foreach($this->arrDataEntites as $objEntity){
 
+		foreach($this->arrDataEntites as $objEntity){
+            $arrColumnData = array();
         	foreach($this->arrColumnTitles as $strKey => $objColumn){
 
                 try{
